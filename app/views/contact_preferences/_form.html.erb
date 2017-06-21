@@ -1,0 +1,22 @@
+<%= form_for(contact_preference) do |f| %>
+  <% if contact_preference.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contact_preference.errors.count, "error") %> prohibited this contact_preference from being saved:</h2>
+
+      <ul>
+      <% contact_preference.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :contact_preference_id %>
+    <%= f.text_field :contact_preference_id %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

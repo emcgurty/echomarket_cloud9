@@ -1,0 +1,394 @@
+<%= main.fields_for :lender_transfer, @lender_transfer do  |lt_field| %>  
+<% @editbale = editable %>
+
+      <div id="lender_transfer" class="center_content" >
+
+          <%= lt_field.hidden_field :transfer_changed, :value => 0 %>
+          <%= lt_field.hidden_field :lender_transfer_id %>
+
+            
+            <% if @lender_transfer %>
+            <% if @lender_transfer.errors.any? %>
+            <div id="error_explanation">
+            <h2><%= pluralize(@lender_transfer.errors.count, "error") %> prohibited this Lender Transfer detail from being saved:</h2>
+            <ul>
+            <% @lender_transfer.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+            </ul>
+            </div>
+            <% end %>
+            <% end %>
+            
+            
+            <% @displayAltAddress = session[:displayAlternative] %>
+            <% @displayPrimaryAddress = session[:displayPrimary] %>
+            <% @iid = session[:item_id] %>
+            <% @displayThirdChoice = "none"  %>
+            
+
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span>Lender Item Transfer Preferences</span>
+                
+              </div>
+            </div>
+
+              <% if @editable == 0 %>
+                <div  class="div_p"  >
+                  <div style="margin:10px;" >
+                    <span value="##" style="color: indigo;" />
+                    <span value=" -- means 'Selection Not Made'"  />
+                  </div>
+                </div>
+              <% end %>
+            
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span value="How would you like a borrower to receive your item?" />
+                
+                 <% if session[:item_id] %>
+                  <%= lt_field.hidden_field :item_id, {:value => session[:item_id]} %>
+                 <% else %>
+                  <%= lt_field.hidden_field :item_id %> 
+                 <% end %>
+                <%= lt_field.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+                <% if getParticipantID %>
+                <%= lt_field.hidden_field :participant_id, { :value => getParticipantID} %>
+                <% else %>
+                <%= lt_field.hidden_field :participant_id %>
+                <% end %>
+                <%= lt_field.hidden_field :user_id, { :value => getUserID} %> 
+              </div>
+            </div>
+           
+            <% if !@displayPrimaryAddress && !@displayAltAddress %>
+              <%= lt_field.hidden_field :borrower_comes_to_which_address, :value=>0 %>
+            <% end %>
+            
+            
+            
+            
+            <% if @displayPrimaryAddress  || @displayAltAddress  %>
+
+              <div style="margin-left:25px;margin-top:5px;float:left;width:100%;">
+
+                <div id="BComesToWhichAddressGroup" >    
+                  <%= lt_field.label :borrower_comes_to_which_address, "Borrower comes to which address?:" %>
+                      
+                                            <% if @editable == 1 %>
+                                            <% if @displayPrimaryAddress  && @displayAltAddress  %>
+                                            <%= lt_field.label :borrower_comes_to_which_address, "... your Primary Address?" %>
+                                            <%= lt_field.radio_button :borrower_comes_to_which_address, 3 %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "... your Alternative Address?" %>
+                                            <%= lt_field.radio_button :borrower_comes_to_which_address, 2 %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "Either address is fine." %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address, 1 %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "Neither, no pick up at any address please." %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address, 0  %>
+                                            
+                                            <% elsif @displayPrimaryAddress && !@displayAltAddress %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "... your Primary Address?" %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address,3 %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "Neither, no pick up at any address please." %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address, 0 %>
+                                            
+                                            <% elsif !@displayPrimaryAddress && @displayAltAddress %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "... your Alternative Address?" %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address, 2 %>
+                                            
+                                            <%= lt_field.label :borrower_comes_to_which_address, "Neither, no pick up at any address please." %>
+                                            <%= lt_field.radio_button  :borrower_comes_to_which_address, 0 %>
+                                            <% end %>
+
+                                            <% end %>
+                     
+                                          <% if @editable == 0 %>
+                                              <% if @lender_transfer.borrower_comes_to_which_address == 0 %>
+                                                <% @cbe =  "Neither, no pick up at any address" %>
+                                              <% elsif @lender_transfer.borrower_comes_to_which_address == 1  %>
+                                                <% @cbe = "Either address is fine" %>
+                                              <% elsif @lender_transfer.borrower_comes_to_which_address == 2 %>
+                                                <% @cbe = "To your alternative address" %>
+                                              <% elsif @lender_transfer.borrower_comes_to_which_address == 3 %>
+                                                <% @cbe = "To your primary address" %>
+                                              <% else %>
+                                                <% @cbe = "##" %>
+                                              <% end %>  
+                                                <span class="RO_text" ><%= @cbe %></span>
+                                          <% end %>  
+                </div>
+                <hr />
+              </div>
+              <% end %>
+
+            <div style="margin-left:25px;margin-top:5px;float:left;">                   
+
+              <%= lt_field.label "Will meet with borrower at an agreed location?:"  %>
+
+                <% if @editable == 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreed, "Yes" %><%= lt_field.radio_button :meetBorrowerAtAgreed, 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreed, "No" %><%= lt_field.radio_button :meetBorrowerAtAgreed, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                      <% if @lender_transfer.meetBorrowerAtAgreed == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.meetBorrowerAtAgreed == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+                
+
+            </div>
+
+            <div id="meetAtAgreedOption" style="margin-right:250px;margin-top:5px;float:right;">  
+              <%= lt_field.label "Lender's choice?:"  %>
+                <% if @editable == 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedLenderChoice, "Yes" %><%= lt_field.radio_button :meetBorrowerAtAgreedLenderChoice, 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedLenderChoice, "No" %><%= lt_field.radio_button  :meetBorrowerAtAgreedLenderChoice, 0 %>
+                <% end %>  
+
+                
+                <% if @editable == 0 %>
+                    <% if @lender_transfer.meetBorrowerAtAgreedLenderChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.meetBorrowerAtAgreedLenderChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+              
+
+              <%= lt_field.label "Borrower's choice?:"  %>
+
+                <% if @editable == 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedBorrowerChoice, "Yes" %><%= lt_field.radio_button :meetBorrowerAtAgreedBorrowerChoice, 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedBorrowerChoice, "No" %><%= lt_field.radio_button  :meetBorrowerAtAgreedBorrowerChoice, 0 %>
+                <% end %> 
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.meetBorrowerAtAgreedBorrowerChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.meetBorrowerAtAgreedBorrowerChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+
+              
+              <%= lt_field.label "Mutual Agreement?:"  %>
+
+                  <% if @editable == 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedMutual, "Yes" %> <%= lt_field.radio_button :meetBorrowerAtAgreedMutual, 1 %>
+                  <%= lt_field.label :meetBorrowerAtAgreedMutual, "No" %>  <%= lt_field.radio_button  :meetBorrowerAtAgreedMutual, 0 %>
+                  <% end %> 
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.meetBorrowerAtAgreedMutual == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.meetBorrowerAtAgreedMutual == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+
+              <hr />
+            </div>
+
+
+
+
+            <div style="margin-left:25px;margin-top:5px;float:left;width:100%;">                    
+
+              <%= lt_field.label "Will deliver to borrower preferred location?:"  %>
+
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :will_deliver_to_borrower, "Yes" %><%= lt_field.radio_button :will_deliver_to_borrower, 1 %>
+                    <%= lt_field.label :will_deliver_to_borrower, "No" %><%= lt_field.radio_button  :will_deliver_to_borrower, 0 %>
+                  <% end %> 
+    
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.will_deliver_to_borrower == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.will_deliver_to_borrower == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+                
+              <hr />
+            </div>
+
+
+            <div style="margin-left:25px;margin-top:5px;float:left;">
+
+              <%= lt_field.label "Would you like a third-party present during transfer to borrower?:"  %>
+
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :thirdPartyPresence, "Yes" %><%= lt_field.radio_button :thirdPartyPresence, 1 %>
+                    <%= lt_field.label :thirdPartyPresence, "No" %><%= lt_field.radio_button  :thirdPartyPresence, 0 %>
+                  <% end %> 
+                    
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.thirdPartyPresence == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.thirdPartyPresence == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+                
+
+            </div>
+
+            <div id="thirdPartyPresenceL2BGroup" style="margin-right:250px;margin-top:5px;float:right;display:${displayThirdChoice};">
+              <%= lt_field.label "Lender's Choice?:" %>
+                
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :thirdPartyPresenceLenderChoice, "Yes" %><%= lt_field.radio_button :thirdPartyPresenceLenderChoice, 1 %>
+                    <%= lt_field.label :thirdPartyPresenceLenderChoice, "No" %><%= lt_field.radio_button  :thirdPartyPresenceLenderChoice, 0 %>
+                  <% end %> 
+                 
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.thirdPartyPresenceLenderChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.thirdPartyPresenceLenderChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                <% end %>
+              
+              <%= lt_field.label "Borrower's Choice?:" %>
+
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :thirdPartyPresenceBorrowerChoice, "Yes" %><%= lt_field.radio_button :thirdPartyPresenceBorrowerChoice, 1 %>
+                    <%= lt_field.label :thirdPartyPresenceBorrowerChoice, "No" %><%= lt_field.radio_button  :thirdPartyPresenceBorrowerChoice, 0 %>
+                  <% end %> 
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.thirdPartyPresenceBorrowerChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.thirdPartyPresenceBorrowerChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                 <% end %>
+              
+              <%= lt_field.label "Mutual Agreement?:" %>
+
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :thirdPartyPresenceMutual, "Yes" %><%= lt_field.radio_button :thirdPartyPresenceMutual, 1 %>
+                    <%= lt_field.label :thirdPartyPresenceMutual, "No" %><%= lt_field.radio_button  :thirdPartyPresenceMutual, 0 %>
+                  <% end %> 
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.thirdPartyPresenceMutual == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.thirdPartyPresenceMutual == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                 <% end %>
+              
+              <hr />
+            </div>
+
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span value="How would like the borrower to return your item?" />
+              </div>
+            </div>
+
+
+            <div id="borrowerReturnsToWhichAddressGroup" style="margin-left:25px;margin-top:5px;float:left;">
+
+                <%= lt_field.label "Borrower returns to your:"  %>
+
+                    <% if @editable == 1 %>
+                    <%= lt_field.label :borrower_returns_to_which_address, "... Primary Address?" %>
+                    <%= lt_field.radio_button :borrower_returns_to_which_address, 3 %>
+                    <%= lt_field.label :borrower_returns_to_which_address, "... Alternative Address?" %>
+                    <%= lt_field.radio_button :borrower_returns_to_which_address, 2 %>
+                    
+                    <%= lt_field.label :borrower_returns_to_which_address, "Either address is fine." %>
+                    <%= lt_field.radio_button :borrower_returns_to_which_address, 1 %>
+                    
+                    <%= lt_field.label :borrower_returns_to_which_address, "Neither, no address contact please." %>
+                    <%= lt_field.radio_button :borrower_returns_to_which_address, 0 %>
+                    <% end %>
+                    
+                  <% if @editable == 0 %>
+                      <% if @lender_transfer.borrower_returns_to_which_address == 0 %>
+                        <% @cbe  = "Neither, no pick up at any address" %>
+                      <% elsif @lender_transfer.borrower_returns_to_which_address == 1 %>
+                        <% @cbe  = "Either address is fine" %>
+                      <% elsif @lender_transfer.borrower_returns_to_which_address == 2 %>
+                        <% @cbe  = "Alternative address" %>
+                      <% elsif @lender_transfer.borrower_returns_to_which_address == 3 %>
+                        <% @cbe  = "Primary address" %>
+                      <% else %>
+                        <% @cbe  = "##" %>
+                      <% end %>
+                    <span id="borrowerReturnsToWhichAddressString" class="RO_text" ><%= @cbe %></span>
+                  <% end %>  
+                
+              </div>
+
+             <div style="margin-left:25px;margin-top:5px;float:left;">
+              <%= lt_field.label "Will pick up at borrower's location?:"  %>
+
+                  <% if @editable == 1 %>
+                    <%= lt_field.label :willPickUpPreferredLocation, "Yes" %><%= lt_field.radio_button :willPickUpPreferredLocation, 1 %>
+                    <%= lt_field.label :willPickUpPreferredLocation, "No" %><%= lt_field.radio_button  :willPickUpPreferredLocation, 0 %>
+                  <% end %> 
+
+                  <% if @editable == 0 %>
+                    <% if @lender_transfer.willPickUpPreferredLocation == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif @lender_transfer.willPickUpPreferredLocation == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                 <% end %>
+              </div>
+          
+          
+          <div style="margin-left:25px;margin-top:5px;float:left;">
+            <%= lt_field.label :comment, "Additional transfer preferences: (255 characters)" %>
+              <% if @editable == 1 %>
+              <%= lt_field.text_area(:comment, {cols:40,  rows:10, :style=>"margin-left:10px;"}) %>
+              <% else %> 
+              <%= lt_field.text_area(:comment, {cols:40,  rows:10, :style=>"margin-left:10px;", :readonly => true }) %>
+              <% end %> 
+         </div>
+      </div>  
+    <% end %>

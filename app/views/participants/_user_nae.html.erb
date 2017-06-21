@@ -1,0 +1,792 @@
+<% if participant  %>
+	  <% @participant = participant  %>
+	  <% end %>
+
+	  <%  @ee = editable %>
+    <%  @whichUserType = getUserType %>
+	  <%  @rid = getRoleID.to_i %>  
+	  <%  @div_display = (@ee == 1 ? 'none' : 'block')  %>    
+    <% if @rid == 0 %>
+	     <% @allow = 'public'  %>  
+		 <% @title = getUserAlias  %>  
+		 <% @sub_title = "EchoMarket 'Participant Information'" %>
+      <% else %>  
+           <% @allow = 'Community'  %>  
+		 <% @title = getUserAlias  %>  
+      <% end %>
+        
+	<% if @rid == 1 %>
+      <% @sub_title = "EchoMarket 'Creator Detail'" %>
+	<% elsif @rid == 2 %>
+      <% @sub_title = "EchoMarket 'Community Member Information'" %>
+	<% else %>	 
+	<% end %>
+
+<%= main.fields_for :participant,  @participant do |nae_field| %>
+
+
+  <% if @participant %>	
+  <% if @participant.errors.any? %>
+	<div id="error_explanation">
+	  <h2><%= pluralize(@participant.errors.count, "error") %> prohibited this participant from being saved:</h2>
+	  <ul>
+	  <% @participant.errors.full_messages.each do |message| %>
+		<li><%= message %></li>
+	  <% end %>
+	  </ul>
+	</div>
+  <% end %>
+  <% end %> 
+  
+	
+      <div id="form_NAE" class="center_content"   >
+      <div class="top" >
+          <div style="margin:10px;margin-top:25px;" >
+		        
+
+		  <% unless @participant %>
+          <% @save_update = "Save " %>
+		  <% else %>
+          <% @save_update = "Update " %>
+      <% end %>
+		  
+		  
+      </div> 
+
+
+          
+		</div> 
+
+        <%= nae_field.hidden_field :participant_changed, :value=> 0  %>
+        <%= nae_field.hidden_field :community_id, :value=> getCommunityID  %>
+        <%= nae_field.hidden_field :participant_id  %>
+        <%= nae_field.hidden_field :user_id, :value=>getUserID  %>
+		
+	
+          <% if @ee == 0 %>
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span style="color: indigo;">##</span>
+                <span>-- means 'Selection Not Made'</span>
+              </div>
+            </div>
+          <% end %>
+           
+	
+       <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+          
+            <% if @rid == 2 %>
+              <%= nae_field.hidden_field :contact_describe_id, :value=>"-9"  %>
+              <%= nae_field.hidden_field :display_organization, :value=>"-9"  %>
+              <%= nae_field.hidden_field :other_describe_yourself, :value=>""  %>
+              <%= nae_field.hidden_field :organization_name, :value=>""  %>
+            <% else %>
+              <div style="margin-left: 5px;float:left;">
+                <div  class="div_p" >
+                  <div style="margin:5px;" >
+                     <% if @rid == 0 %>
+                        <span>Yourself generally, your affiliation</span>
+                     <% elsif @rid == 1 %>
+                        <span>Your Community generally..</span>
+					<% else %>  
+                     <% end %>
+                   </div>
+                </div> 
+			  </div>
+	    <% end %>
+	</div>
+
+
+      <div style="display:block;float:left;height:auto;width:100%;margin-top:5px;">
+        <div style="float:left;margin-left:25px">
+            <% if @rid < 1 %>
+                  <% @display_describe = (@ee == 1 ? "How would you describe yourself?" : "How you describe yourself:")  %>
+           <% else %>
+				          <% @display_describe = (@ee == 1 ? "How would you describe your Community?" : "How you describe your Community:") %> 
+				   <% end %>	  
+ 					 
+ 					 <%= nae_field.label :contact_describe_id, @display_describe %><span class="required_fields">*</span>
+
+					<% if @ee == 1 %>
+					    <% if @rid == 1 %>
+							  <%= nae_field.collection_select :contact_describe_id, ContactDescribe.where(["purpose_type = 'community'"]).order("option_value"), :contact_describe_id, :borrower_or_lender_text %>
+					    <% elsif @rid == 0  %>
+                <% if @whichUserType == 'borrow' %>
+								  <%= nae_field.collection_select :contact_describe_id, ContactDescribe.where(["purpose_type = 'borrow'"]).order("option_value"), :contact_describe_id, :borrower_or_lender_text %>        
+                <% elsif @whichUserType == 'lend' || @whichUserType == 'both' %>
+								  <%= nae_field.collection_select :contact_describe_id, ContactDescribe.where(["purpose_type = 'lend'"]).order("option_value"), :contact_describe_id, :borrower_or_lender_text %>
+                <% else %> 
+
+							  <% end %>
+							
+             <% else %> 
+
+					   <% end %>
+					<% end %>
+					<% if @ee == 0 && @participant %>
+          <span class="RO_text" ><%= @cd %></span>
+					<% end %>
+					
+            <span class="error-message" id="contact_describe_id" ></span>
+            </div>
+            
+            <div id="otherDescribeYourselfText"  style="margin-top:10px;margin-left:5px;display: none;float:left;">    
+				  <% @display_other = (@ee == 1 ? "Please provide an 'Other' description:" : "'Other' Description:" ) %>
+            <%= nae_field.label  :other_describe_yourself,  @display_other, :style=>"margin-left:25px"  %>
+				  <% if @ee == 1 %>
+            <%= nae_field.text_field( :other_describe_yourself, {:style=>"margin-left:25px",  maxlength:24, size:24}) %>
+				  <% end %>
+				  <% if @ee == 0 %>
+            <span class="RO_text"><%= @participant.other_describe_yourself %></span>
+				  <% end %>
+            <span class="error-message" id="other_describe_yourself" ></span>
+            </div>
+				</div>
+		
+
+      <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;margin-right:50px;">
+      <div style="float:left;margin-left:25px">
+		  <% if @participant  %>
+		  <% if @participant.organization_name  %>
+		  <%= nae_field.label  :organization_name %>
+		  <%= nae_field.text_field( :organization_name, {maxlength:50, size:40}) %>
+			
+			<% if session[editable] == 0 %>
+			<span class="RO_text"><%= @participant.organization_name %></span>
+			<% end %>	
+			<span class="error-message" id="organization_name" ></span>
+		  <% end %>
+		  <% end %>
+      </div>
+
+       
+		<% if @participant %>
+		<% if @participant.organization_name %>  
+      <% if @rid == 0 %>
+    <div id="yesNoOrganization" style="margin-left:5px;display: block;float:left;">  
+      <%= nae_field.label :display_organization , "Allow " + @allow + " to see your Organization Name or Website Link?:"  %>
+				<% if @ee == 1 %>
+					   <%= nae_field.label :display_organization, 'Yes' %><%= nae_field.radio_button :display_organization, "1" %>
+                         <%= nae_field.label :display_organization, 'No' %><%= nae_field.radio_button :display_organization, "0" %> 
+				<% end %>	
+				
+				<% if @ee == 0  %>
+				<% if @participant %>
+					<% if @participant.display_organization == 0 %>
+					  <% @yn ="No" %>
+					<% elsif @participant.display_organization == 1 %>
+					  <% @yn ="Yes" %>
+					<% else %>
+					  <% @yn ="##" %>
+					<% end %>
+				<% end %>
+				  <span class="RO_text" id="displayOrganizationString"><%= @yn %></span>  
+				<% end %>
+		</div>
+
+          <% if @rid > 0  %><%= nae_field.hidden_text :display_organization, :value=>"-9" %><% end %>
+		  </div>
+		   <% end %>
+       <% end %>
+	<% end %>
+
+         <div style="margin-left: 5px;float:left;">
+            <div  class="div_p"  >
+              <div style="margin:5px;" >
+                <span>Your Name...</span>
+              </div>
+            </div>
+
+           <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="margin-left: 25px;float:left">
+            <%= nae_field.label  :first_name %><span class="required_fields">*</span>
+			      <% if @ee  == 1 %> 
+			          <% if @participant %>
+                <%= nae_field.text_field(:first_name, {:value => (@community ? @community.first_name : @participant.first_name), maxlength:24, size:24})  %>
+                <% else %>
+                <%= nae_field.text_field(:first_name, {:value => (@community ? @community.first_name : ''), maxlength:24, size:24})  %>
+                <% end %>
+				    <% end %>
+				
+				    <% if @ee  == 0 %>
+                  <span class="RO_text"><%= @participant.first_name %></span >
+				    <% end %>
+            <span class="error-message" id="first_name" ></span>
+            </div>
+			
+            <div style="margin-left: 25px;float:left">
+                <%= nae_field.label  :mi, "Middle Initial:"   %>
+			            <% if @ee  == 1 %>
+                  <%= nae_field.text_field  :mi, maxlength:1, size:2 %>
+				          <% end %>
+				    <% if @ee  == 0 %>
+              <span class="RO_text"><%= @participant.mi %></span>
+				    <% end %>
+            </div>
+            <div style="margin-left: 25px;float:left">
+              <%= nae_field.label  :last_name %><span class="required_fields">*</span>
+			        <% if @ee  == 1  %> 
+			          <% if @participant %>
+                <%= nae_field.text_field(:last_name, {:value => (@community ? @community.last_name : @participant.last_name), maxlength:24, size:24})  %>
+                <% else %>
+                <%= nae_field.text_field(:last_name, {:value => (@community ? @community.last_name : ''), maxlength:24, size:24})  %>
+                <% end %>
+
+				      <% end %>
+				
+				      <% if @ee  == 0 %>
+                  <span class="RO_text"><%= @participant.last_name %></span >
+				      <% end %>
+                <span class="error-message" id="lastName" ></span>
+              </div>
+
+              <div style="margin-left: 25px;float:left">
+
+                <%= nae_field.label  :display_name, "Allow " +  @allow + " to see your Name?"  %>
+                  <% if @ee == 1  %>
+                      <%= nae_field.label :display_name, 'Yes' %><%= nae_field.radio_button :display_name, "1" %>
+                      <%= nae_field.label :display_name, 'No' %><%= nae_field.radio_button :display_name, "0" %> 
+				          <% end %>
+
+                  <% if @ee == 0  %>
+				      <% if @participant %>
+					    <% if @participant.display_name == 0 %>
+					      <% @yn ="No" %>
+					    <% elsif @participant.display_name == 1 %>
+					      <% @yn ="Yes" %>
+					    <% else %>
+					      <% @yn ="##" %>
+					    <% end %>
+				<% end %>
+ 				  <span class="RO_text" id="display_name"><%= @yn %></span>  
+				<% end %>
+				<span id="displayNameString"></span>
+              </div>
+            </div>
+          </div>
+
+          <div  class="div_p"  >
+            <div style="margin:5px;" >
+              <span >Your Email Address...</span>
+            </div>
+          </div>
+		
+
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="margin-left: 25px;float:left">
+              <%= nae_field.label  :registration_email, "Your registration email:" %>
+                <span style="margin-left: 5px;" id="registration_email"><%= (getEmail.nil? ? "" : getEmail) %></span>
+            </div>
+		  
+            <div style="margin-left: 25px;float:left" >
+		    <% if @participant %>
+              <% @emailAlt_empty = @participant.email_alternative.nil? %>
+			<% else %>
+			<% @emailAlt_empty = true %>
+			<% end %>
+			<% if @ee== 1 && @emailAlt_empty %>
+              <%= nae_field.label  :questionAltEmailProvide, "Would you like to provide an alternative email address?" %> 
+			  <% if @ee == 1  %>
+			        <br />
+					<%= nae_field.label :questionAltEmailProvide, 'Yes' %><%= nae_field.radio_button :questionAltEmailProvide, "1" %>
+                      <%= nae_field.label :questionAltEmailProvide, 'No' %><%= nae_field.radio_button :questionAltEmailProvide, "0" %> 
+		      <% end %>
+              <% end %>
+            </div>
+            <% unless @emailAlt_empty %>
+              <% @e_display = "block" %>
+            <% else %>  
+              <% @e_display = "none" %>
+            <% end %>  
+		
+        <div id="emailAlternative" style="margin-left: 25px;margin-bottom:5px;float:left;display:<% @e_display %>;" >
+              <%= nae_field.label  :email_alternative, "Your alternative email address:"  %>
+			  <% if @ee == 1 %>
+                <%= nae_field.text_field(:email_alternative,  {maxlength:"50",  size:"25",  :style=>"margin-left: 5px;"}) %>
+			  <% end %>
+			  <% if @ee == 0 %>
+			  <% if @participant %>
+                <span class="RO_text"  id="emailAlternativeRO" ><%= @participant.email_alternative %></span>
+			  <% end %>
+			  <% end %>
+                <span class="error-message" id="emailAlternative" ></span>
+               <br />
+		             
+			<% if @ee == 1  %>
+			   <%= nae_field.label :questionAltEmailDelete, "Would you like to delete your Alternative Email?",  :style=>"margin-top:10px;" %>
+					<%= nae_field.label :questionAltEmailDelete, 'Yes' %><%= nae_field.radio_button :questionAltEmailDelete, "1" %>
+                      <%= nae_field.label :questionAltEmailDelete, 'No' %><%= nae_field.radio_button :questionAltEmailDelete, "0" %> 
+		      <% end %>
+            </div>
+          </div>     
+
+
+	    <div  class="div_p"  >
+            <div style="margin:5px;" >
+              <span>Your Primary Address...</span>
+            </div>
+          </div>
+          
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="margin-left: 15px;float:left">
+              
+		
+			<% if @participant %>
+			<%  @pa = Address.primary_address.where(participant_id: @participant.participant_id).first %>
+			<% else %>
+			<%  @pa = Address.new  %>
+			<% end %>
+
+			<%= nae_field.fields_for :primary_address, @pa do |primary_address| %>
+              
+              <% if @ee == 1 %>
+						 
+                  <table >
+                    <tr>
+                      <td>
+                        <%= primary_address.label :address_line_1 %><span class="required_fields">*</span>
+                        <%= primary_address.text_field( :address_line_1, {:style=>"margin-left: 5px;", maxlength:24, :title=>"You don't need to provide your numeric address.", :class=>"primary"}) %>
+                        <%= primary_address.hidden_field :participant_id, :value=>getParticipantID  %>
+                        <%= primary_address.hidden_field :address_type, :value=>'primary'  %>
+                        <% if @pa %>
+                        <%= primary_address.hidden_field :address_id, :value=> @pa.address_id  %>
+                        <% else %>
+                        <%= primary_address.hidden_field :address_id  %>
+                        <% end %>
+                        <span class="error-message" id="addressLine1" ></span>
+                      </td>
+                      <td>
+                        <%= primary_address.label :address_line_2 %>
+                        <%= primary_address.text_field :address_line_2, :style=>"margin-left: 5px;", maxlength:24 %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= primary_address.label :city %><span class="required_fields">*</span>
+                        <%= primary_address.text_field( :city, {maxlength:24, :style=>"margin-left: 5px;", :class=>"primary"}) %>
+                        <span class="error-message" id="city" ></span>
+                      </td>
+                      <td>
+                        <%= primary_address.label :us_state_id %>
+                        <% if @pa %>
+			                  <%= primary_address.collection_select :us_state_id, UsState.all, :id, :state_name %>
+			                  <% else %>
+			                  <%= primary_address.collection_select :us_state_id, UsState.all, :id, :state_name, {:selected => "-2"} %>
+			                  <% end %>
+                        <span class="error-message" id="us_state_id" ></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= primary_address.label :province %>
+                        <%= primary_address.text_field(:province, {:style=>"margin-left: 5px;", maxlength:24}) %>
+
+                      </td>
+                      <td>
+                        <%= primary_address.label :region %>
+                        <%= primary_address.text_field( :region, {:style=>"margin-left: 5px;",  maxlength:24}) %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= primary_address.label :postal_code %><span class="required_fields">*</span>
+                        <%= primary_address.text_field( :postal_code, {:style=>"margin-left: 5px;", :class=>"primary", maxlength:24})  %>
+                        <span class="error-message" id="postalCode" ></span>
+                      </td>
+                      <td >
+
+                        <%= primary_address.label :country_id %>
+                        <span class="required_fields">*</span>
+			                  <%= primary_address.collection_select :country_id, Country.all, :country_id, :country_name %>
+                        <span class="error-message" :countryId ></span>
+                      </td>
+                    </tr>
+
+                    <tr >
+                      <td colspan="2">
+                        <%= nae_field.label :display_address,  "Allow " + @allow  + " to see your Primary Address?",   :title=>"Your privacy is important to EchoMaket.  However in searching for available items, EchoMarket needs your address." %>
+                        <%= nae_field.label :display_address, 'Yes' %><%= nae_field.radio_button :display_address, "1" %>
+                        <%= nae_field.label :display_address, 'No' %><%= nae_field.radio_button :display_address, "0" %> 
+                      </td>
+                    </tr>
+                  </table>
+
+             <% elsif @ee == 0 %>
+
+                  <table >
+                    <tr>
+                      <td>
+                        <%= primary_address.label :address_line_1 %>
+                        <%= @pa[:address_line_1] %>
+                      </td>
+                      <td>
+                        <%= primary_address.label :address_line_2 %>
+                        <%= @pa.address_line_2 %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= primary_address.label :city %>
+                        <%= @pa.city %>
+                      </td>
+                      <td>
+                        <%= primary_address.label :us_state_id %>
+                        <%= @spr %>
+		            	      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= primary_address.label :province %>
+                        <%= @pa.province %>
+
+                      </td>
+                      <td>
+                        <%= primary_address.label :region %>
+                        <%= @pa.region %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= primary_address.label :postal_code %>
+                        <%= @pa.postal_code %>
+                      </td>
+                      <td >
+
+                        <%= primary_address.label :country_id %>
+                        <%= @cpr %>
+                       
+
+                      </td>
+                    </tr>
+
+                    <tr >
+                      <td colspan="2">
+                        <% nae_field.label :display_address,  "Allow " + @allow  + " to see your alternative Address?" %>
+				<% if @participant.display_address == 0 %>
+			       <% @yn = "No" %>
+				<% elsif @participant.display_address == 1 %>
+			       <% @yn = "No" %>
+				<% else %>
+				  <% @yn = "##" %>
+				<% end %>
+				<span class="RO_text"><%= @yn %></span> 
+                      </td>
+                    </tr>
+                  </table>
+             <% end %>	
+
+		     <% end %>
+            </div>
+          </div>    
+
+
+
+         <div style="margin-left: 15px;float:left">
+		        <% if @ee == 1 %>
+				     <%= nae_field.label  "Would you like to provide an alternative address?"   %>
+			       <%= nae_field.label :question_alt_address, 'Yes' %><%= nae_field.radio_button :question_alt_address, "1" %>
+             <%= nae_field.label :question_alt_address, 'No' %><%= nae_field.radio_button :question_alt_address, "0" %> 
+ 			      <% end %>
+          </div>
+
+          <% if @participant %>
+          <% if @participant.question_alt_address == 1 %>
+          <% @display_alt_address = 'display' %>
+          <% else %>
+          <% @display_alt_address = 'none' %>
+          <% end %>
+          <% else %>
+          <% @display_alt_address = 'none' %>
+          <% end %>
+
+          <div id="addressAlternative"  style="display:<%= @display_alt_address %>;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="margin-left: 15px;float:left;">
+                  <div  class="div_p"  >
+                  <div style="margin:5px;" >
+				    <% if @ee == 1 %>
+                <span >An Alternative Address...(Optional. Fields with asterisk are required if pursued.)</span>
+					  <% end %>
+					  <% if @ee == 0 %>
+                      <span  >Your Alternative Address...</span>
+					<% end %>
+                    </div>
+                  </div>
+			
+ 	    <% if @participant %>
+ 	    <%  @aa = Address.alternative_address.where(participant_id: @participant.participant_id).first %>
+ 	    <% else %>
+			<%  @aa = Address.new  %>
+			<% end %>
+		  
+		   	<%= nae_field.fields_for :alternative_address, @aa do |alternative_address| %>
+		    
+			    <% if @ee == 1 %>
+			 
+			 
+			   <table>
+			   <tr>
+                        <td>
+                        <%= alternative_address.label :address_line_1 %>
+                        <span class="required_fields">*</span>
+                        <%= alternative_address.text_field( :address_line_1, {:style=>"margin-left: 5px;", maxlength:24, :title=>"You don't need to provide your numeric address.", :class=>"alternative"}) %>
+                        <%= alternative_address.hidden_field :participant_id, :value=>getParticipantID  %>
+                        <%= alternative_address.hidden_field :address_type, :value=>'alternative'  %>
+                        <% if @aa %>
+                        <%= alternative_address.hidden_field :address_id, :value=> @aa.address_id  %>
+                        <% else %>
+                        <%= alternative_address.hidden_field :address_id  %>
+                        <% end %>
+                        <span class="error-message" id="addressLine1" ></span>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :address_line_2 %>
+                        <%= alternative_address.text_field( :address_line_2, {:style=>"margin-left: 5px;", maxlength:24}) %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :city %>
+                        <span class="required_fields">*</span>
+                        <%= alternative_address.text_field( :city, {maxlength:24, :style=>"margin-left: 5px;", :class=>"alternative"} )%>
+                        <span class="error-message" id="city" ></span>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :us_state_id %>
+			                  <%= alternative_address.collection_select :us_state_id, UsState.all, :us_state_id, :state_name %>
+                        <span class="error-message" id="us_state_id" ></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :province %>
+                        <%= alternative_address.text_field( :province, {:style=>"margin-left: 5px;", maxlength:24}) %>
+
+                      </td>
+                      <td>
+                        <%= alternative_address.label :region %>
+                        <%= alternative_address.text_field( :region, {:style=>"margin-left: 5px;",  maxlength:24}) %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= alternative_address.label :postal_code %>
+                        <span class="required_fields">*</span>
+                        <%= alternative_address.text_field( :postal_code, {:style=>"margin-left: 5px;", :class=>"primary", maxlength:24 }) %>
+                        <span class="error-message" id="postal_code" ></span>
+                      </td>
+                      <td >
+
+                        <%= alternative_address.label :country_id %><span class="required_fields">*</span>
+			                  <%= alternative_address.collection_select :country_id, Country.all, :country_id, :country_name %>
+                        <span class="error-message" :country_id ></span>
+                      </td>
+                    </tr>
+
+                    <tr >
+                      <td colspan="2">
+                      </td>
+                    </tr>
+
+                    <tr >
+                      <td colspan="2">
+                             <%= nae_field.label  "Allow " + @allow + " to see your Alternative Address?"   %>
+                             <%= nae_field.label :display_alternative_address, 'Yes' %><%= nae_field.radio_button :display_alternative_address, "1" %>
+                             <%= nae_field.label :display_alternative_address, 'No' %><%= nae_field.radio_button :display_alternative_address, "0" %> 
+					                   <br />
+                           
+                             <% if @aa %>
+                             <%= nae_field.label  "Would you like to delete your Alternative Address?"  %>
+                             <%= nae_field.label :questionAltAddressDelete, 'Yes' %><%= nae_field.radio_button :questionAltAddressDelete, "1" %>
+							               <%= nae_field.label :questionAltAddressDelete, 'No' %><%= nae_field.radio_button :questionAltAddressDelete, "0" %> 
+							               <% end %>
+                      
+                      </td>
+                    </tr>
+
+                  </table>
+                  
+          <% elsif @ee == 0  %>
+          <% if @aa %>
+          <% if @aa.postal_code  %>
+          <table>
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :address_line_1 %>
+                        <%= @aa.address_line_1 %>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :address_line_2 %>
+                        <%= @aa.address_line_2 %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :city %>
+                        <%= @aa.city %>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :us_state_id %>
+          		         <%= @salt %>
+
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :province %>
+                        <%= @aa.province %>
+
+                      </td>
+                      <td>
+                        <%= alternative_address.label :region %>
+                        <%= @aa.region %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= alternative_address.label :postal_code %>
+                        <%= @aa.postal_code %>
+                      </td>
+                      <td >
+
+                        <%= alternative_address.label :country_id %>
+			                  <%  @calt %>
+
+                      </td>
+                    </tr>
+
+                    <tr >
+                      <td colspan="2">
+                        <% nae_field.label :display_address,  "Allow " + @allow  + " to see your alternative Address?" %>
+		                    <% if @participant.display_alternative_address == 0  %>
+                            <% @yn = "No"  %>
+                        <% elsif @participant.display_alternative_address == 1 %>
+                            <% @yn = "Yes"  %>
+                        <% else %>
+                            <% @yn = "##"  %>
+                        <% end %>
+                        <span  id="displayAlternativeAddressString"  class="RO_text" ><%=  @yn %></span >
+                    </td>
+                    </tr>
+                  </table>
+          
+				 <% end %>
+				 <% end %>
+            
+          
+				 <% end %>
+				 <% end %>
+            </div>
+          </div>    
+
+       <div  class="div_p"  >
+            <div style="margin:10px;" >
+              <span>Your Phone Access...</span>
+            </div>
+          </div>
+
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:1px;">
+            <div style="margin-left: 25px;float:left">
+          
+			<table width='99%'>
+                <tr class="odd">
+                  <td style="width:33%;">
+                    <%= nae_field.label  :home_phone, "Home Phone:" %>
+				          <% if @ee == 1 %>
+                      <%= nae_field.text_field( :home_phone,  {:class=>"home_phone", :style=>"margin-left:10px", maxlength:20,  size:20}) %>
+					        <% end %>
+					        <% if @ee == 0 %>
+                        <span class="RO_text" ><%= @participant.home_phone %></span>
+    					    <% end %>
+                    
+                    <div style="float:left" >
+                      <%= nae_field.label "Allow " + @allow + " to see your Home Phone Number?"  %>
+                        <% if @ee == 1 %>
+					              <br/> <%= nae_field.label :display_home_phone, 'Yes' %><%= nae_field.radio_button :display_home_phone, "1" %>
+                        <%= nae_field.label :display_home_phone, 'No' %><%= nae_field.radio_button :display_home_phone, "0" %> 
+					          <% end %>
+                        <% if @ee == 0 %>
+                          
+                            <% if @participant.display_home_phone == 0 %>
+                              <% @yn = "No"  %>
+                            <% elsif @participant.display_home_phone == 1 %>
+                              <% @yn = "Yes"  %>
+                            <% else %>
+                              <% @yn = "##"  %>
+                            <% end %>
+                          <span  id="displayHomePhoneString"   class="RO_text" ><%=  @yn %></span >
+                        <% end %>
+                         
+                      <span class="error-message" id="home_phone" ></span>    
+                    </div>
+                  </td>
+
+                  <td style="width:33%;">
+                    <%= nae_field.label :cell_phone, "Cell Phone:" %>
+				    <% if @ee == 1  %>
+                      <%= nae_field.text_field( :cell_phone, {:class=>"cell_phone", :style=>"margin-left:10px",  maxlength:20, size:20}) %>
+					<% end %>
+					<% if @ee == 0  %>
+					   <span  class="RO_text" ><%= @participant.cell_phone %></span> 
+					<% end %>				  
+                    
+                    <div style="float:left" >
+                      <%= nae_field.label "... your Cell Phone Number?"  %>
+                        <% if @ee == 1 %>
+					               <br/><%= nae_field.label :display_cell_phone, 'Yes' %><%= nae_field.radio_button :display_cell_phone, "1" %>
+                         <%= nae_field.label :display_cell_phone, 'No' %><%= nae_field.radio_button :display_cell_phone, "0" %> 
+					              <% end %>
+                        <% if @ee == 0 %>
+                            <% if @participant.display_cell_phone == 0 %>
+                              <% @yn = "No"  %>
+                            <% elsif @participant.display_cell_phone == 1 %>
+                              <% @yn = "Yes"  %>
+                            <% else %>
+                              <% @yn = "##"  %>
+                            <% end %>
+                          <span  id="displayCellPhoneString"  class="RO_text" ><%=  @yn %></span >
+                        <% end %>
+                      <span class="error-message" id="cell_phone" ></span>    
+                    </div>
+                  </td>
+                  <td style="width:33%;">
+                    <%= nae_field.label :alternative_phone, "... Alternative Phone:" %>
+					<% if @ee == 1  %>
+					    <%= nae_field.text_field(:alternative_phone,  {:class=>"alternative_phone", :style=>"margin-left:10px", maxlength:20,  size:20})  %> 
+					<% end %>
+					 <% if @ee == 0 %>
+                         <span  class="RO_text" > <%=  @participant.alternative_phone  %></span>
+					<% end %>
+                    
+          <div style="float:left" >
+            <%= nae_field.label "... your Alternative Phone Number?"  %>
+					  <% if @ee == 1 %>
+					   <br/><%= nae_field.label :display_alternative_phone, 'Yes' %><%= nae_field.radio_button :display_alternative_phone, "1" %>
+             <%= nae_field.label :display_alternative_phone, 'No' %><%= nae_field.radio_button :display_alternative_phone, "0" %> 
+					  <% end %>
+                        <% if @ee == 0 %>
+                            <% if @participant.display_alternative_phone == 0  %>
+                                 <% @yn = "No"  %>
+                            <% elsif @participant.display_alternative_phone == 1 %>
+                                  <% @yn = "Yes"  %>
+                            <% else %>
+                                <% @yn = "##"  %>
+                            <% end %>
+                          <span  id="displayAlternativePhoneString" class="RO_text" ><%=  @yn %></span >
+                        <% end %>
+                      <span class="error-message" id="alternative_phone" ></span>        
+                    </div>
+                  </td>
+                </tr>
+              </table>
+		
+            </div>
+          </div>
+
+       </div>
+  
+   <% end %>

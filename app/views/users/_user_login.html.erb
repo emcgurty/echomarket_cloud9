@@ -1,0 +1,64 @@
+<%= form_for :user, :url=> {:controller=>"users", :action => "user_login", :commit=>"login"}, :html=> {:class=>"login",  :id=>"user_login_form"} do |f| %>
+<% if @user %>	
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %> 
+
+    <table style="width:100%;margin-left: 5px" align="center" id="user_login_table">
+      <tr >
+        <td style="padding-top: 15px;padding-bottom: 15px;color:black;font-size: large">
+          <span style="color:black;">User Login</ span>
+        </td>
+      </tr>    
+      <tr>
+        <td style="padding-bottom: 15px;">
+		<div class="field">
+			<%= f.label :username %>
+			<%= f.text_field :username %>
+		</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: 15px;">
+		<div class="field">
+		<%= f.label :password %>
+		<%= f.password_field :password %>
+		</div>
+	</td>
+      </tr>
+      <tr>
+        <td style="padding-bottom: 15px;">  
+          <p>
+            <%= f.submit "Login" %>
+            <br />
+            <br />
+			<div class="actions">
+			<%= link_to "Forgot User Name", controller: "users", action: "app_options", id: "forgotUserName" %> 
+			<span> |  </ span>
+			<%= link_to "Forgot User Password", controller: "users", action: "app_options", id: "forgotUserPassword" %>          
+			</div>
+			<br />
+            <br />
+			<div class="actions">
+			<%= link_to "Individual or Organization Registration", user_user_registration_url(99) %>
+			</div >
+            <br />
+            <br />
+			<div class="actions">
+			<%= link_to "Community Registration", user_community_registration_url(99) %>
+			</div>
+          </p>     
+        </td> 
+      </tr>
+    </table>
+
+	<% end %> 

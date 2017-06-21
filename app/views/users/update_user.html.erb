@@ -1,0 +1,52 @@
+<%= form_for :user, :url=> {:controller=>"users", :action => "manage_password_change" }, :html=> {:class=>"login"} do |f| %>
+  
+	  <%= f.hidden_field :reset_code, :value => params[:id].nil? ?  params[:id] = session[:reset_code] : params[:id] %>
+	  <% if @user %>	
+    <% if @user.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+  
+        <ul>
+        <% @user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <% end %> 
+
+      <div class="center-content" >
+        
+      <div  class="top" id="activate_div">
+        <table style="width:75%;margin-left: 50px" align="center" id="activate_table">
+          <tr style="background-color:  #F0FFFF">
+            <td style="padding-top: 15px;padding-bottom: 10px;">
+              <span>Please login to complete update of your User Information update"</span>
+              <%= f.submit "Please Complete!", {:class="right_div"} %>
+
+            </td>
+          </tr> 
+          <tr style="background-color:  #FFF7FF">
+            <td style="padding-top: 15px;padding-bottom: 10px;">
+           			  <%= f.label :username %>
+			            <%= f.text_field :username %>
+            </td>
+          </tr>
+          <tr style="background-color:  #F0FFFF">
+            <td style="padding-top: 15px;padding-bottom: 10px;">
+                  <%= f.label :password %>
+			            <%= f.password_field(:password, {maxlength:18}) %>
+            </td>           
+          </tr>
+          <tr style="background-color:  #FFF7FF">
+            <td style="padding-top: 15px;padding-bottom: 10px;">
+                  <%= f.label :password_confirmation %>
+			            <%= f.password_field(:password_confirmation, {maxlength:18}) %> 
+			      </td>
+          </tr>
+        </table>
+      </div>
+      </div>
+    <% end %>
+      <br /><br />
+

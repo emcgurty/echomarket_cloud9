@@ -1,0 +1,353 @@
+    <div id="lender_registration" class="center_content" >
+        <% @iid = item.item_type %>
+          
+          <div id="form_monetary" class="center_content" >
+            <div class="top" >
+              <div  class="div_p"  >
+                <div style="margin:10px;" >
+                  <span>Lender Item Conditions</span>
+                </div>
+              </div>
+
+            </div>
+
+             <div  class="div_p"  >
+                  <div style="margin:10px;" >
+                    <span class="RO_text">##</span>
+                    <% if @iid == 'borrow' %>
+                    <span>-- means 'Selection Not Made. Borrower may be indifferent.</span>
+                    <% else %>
+                    <span>-- means 'Selection Not Made. Lender may be indifferent.</span>
+                    <% end %>
+                  </div>
+                </div>
+
+            <div style="margin-left:15px;margin-top:5px;float:left;">
+              <%= label_tag "Item Offered For Free?"  %>
+                
+                  <% if lender_item_condition.for_free == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.for_free == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="for_free_String"  class="RO_text" ><%= @cbe %></span>
+
+              
+            </div>
+            <div >
+              <hr />
+              <table class="personal" >
+                <tr>
+                  <td>  
+                    <%= label_tag "Item has a small borrowing fee?:"  %>
+
+                          <% if lender_item_condition.small_fee == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.small_fee == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="small_fee_String"  class="RO_text" ><%= @cbe %></span>
+
+                  </td>
+                  <td>
+                    <% if lender_item_condition.small_fee == 1 %>
+                    <%= label_tag "If yes, what fee amount?" %>
+                      <span id="small_fee_amount_String", class="RO_text" ><%= lender_item_condition.small_fee_amount %></span>
+                    <% else %>  
+                      <span id="small_fee_amount_String", class="RO_text" >##</span>
+                    <% end %>  
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+
+            <div style="margin-top:5px;margin-left:25px;">
+              <hr />
+              <table class="personal" >
+                <tr>
+                  <td>  
+
+                    <%= label_tag "Item may be available for small purchase amount?:"  %>
+
+                          <% if lender_item_condition.available_for_purchase == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.available_for_purchase == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="available_for_purchase_String"  class="RO_text" ><%= @cbe %></span>
+
+                  </td>
+                  <td>
+                    <%= label_tag :available_for_purchase_amount, "If yes, what purchase amount?:" %>
+
+                      <% if session[:editable] == 0 %>
+                        <span id="available_for_purchase_amount_String" class="RO_text" ><%= lender_item_condition.available_for_purchase_amount %></span>
+                      <% end %> 
+                    
+
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan=2>  
+
+                    <%= label_tag "Item may be available for donation?:"  %>
+
+
+                      
+                          <% if lender_item_condition.available_for_donation == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.available_for_donation == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="available_for_donation_String"  class="RO_text" ><%= @cbe %></span>
+
+
+                    
+                  </td>
+                </tr>
+                <tr>
+                  <% if lender_item_condition.trade_item %>
+                  <td>  
+                    <%= label_tag "Would lender be interesting in trading?:"  %>
+                          <% if lender_item_condition.trade == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.trade == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        <span id="trade_String"  class="RO_text" ><%= @cbe %></span>
+                  </td>
+                  <td>
+                    <%= label_tag :trade_item, "If yes, what would you like in exchange?" %>
+                    <span id="tradeItemString"  class="RO_text" ><%= lender_item_condition.trade_item %></span>
+                  </td>
+                  
+                  <% else %>
+                  <td colspan=2>  
+                    <%= label_tag "Would lender be interesting in trading?:"  %>
+                          <% if lender_item_condition.trade == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.trade == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        <span id="trade_String"  class="RO_text" ><%= @cbe %></span>
+                  </td>
+                  <% end %>
+                </tr>
+                <tr>
+                  <td>  
+                    <%= label_tag "Lender requires a security deposit?:"  %>
+                          <% if lender_item_condition.security_deposit == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif lender_item_condition.security_deposit == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        <span id="security_deposit_String"  class="RO_text" ><%= @cbe %></span>
+
+                  </td>
+                  <td>
+
+                    <%= label_tag :security_deposit_amount, "If yes, please provide the security deposit amount:" %>
+                      <% if session[:editable] == 1 %>
+                        <%= f.text_field(:security_deposit_amount, {size:10,  maxlength:10 }) %>
+                        <span class="security_deposit_amount_error"></span>
+                      <% end %>  
+                      
+                      <% if session[:editable] == 0 %>
+                        <span id="security_deposit_amount_String" class="RO_text" ><%=  lender_item_condition.security_deposit_amount %></span>
+                      <% end %>  
+                    
+
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div id="form_duration" class="center_content" >
+            <hr />
+            <div  class="div_p" >
+              <div style="margin:10px;" >
+                <span value="Lending Terms: Duration" />
+              </div>
+            </div>
+
+            <div style="float:left;width:33%;margin-left:25px;">
+              <%= label_tag "Agreed number of days?:"  %>
+
+                  <% if lender_item_condition.agreed_number_of_days == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.agreed_number_of_days == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="agreed_number_of_days_String"  class="RO_text" ><%= @cbe %></span>
+               
+
+            </div>
+
+
+            <div style="float:left;">
+              <%= label_tag "Agreed number of hours?:"  %>
+                
+                
+                        
+                  <% if lender_item_condition.agreed_number_of_hours == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.agreed_number_of_hours == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="agreed_number_of_hours_String"  class="RO_text" ><%= @cbe %></span>
+
+              
+            </div>
+            <div style="float:left;margin-left:40px;">
+
+              <%= label_tag "Indefinite?"  %>
+
+
+                        
+                  <% if lender_item_condition.indefinite_duration == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.indefinite_duration == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="indefinite_duration_String"  class="RO_text" ><%= @cbe %></span>
+
+
+              
+            </div>
+          </div>
+          <div id="form_conditions" class="center_content" >
+            <hr />
+            <div  class="div_p"  >
+
+              <div style="margin:10px;" >
+                <span value="Lending Terms: Conditions" />
+              </div>
+            </div>
+
+            <table class="personal" >
+              <tr>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:25px;margin-top:5px;">
+
+                    <%= label_tag "Would lender like to be present during borrowing period?"  %>
+
+
+                        
+                  <% if lender_item_condition.present_during_borrowing_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.present_during_borrowing_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="present_during_borrowing_period_String"  class="RO_text" ><%= @cbe %></span>
+
+                    
+                  </div>
+                </td>
+                <td style="vertical-align:top;">
+                  <div style="display:block;background-color:#E1F5A9;;margin-left:15px;margin-top:5px;" id="length_of_presence">
+                    <div style="margin-left:25px;margin-top:5px;margin-right:10px;">
+
+                <%= label_tag "During the entire lending period?:"  %>
+
+
+                        
+                  <% if lender_item_condition.entire_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.entire_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="entire_period_String"  class="RO_text" ><%= @cbe %></span>
+
+                      
+
+                    </div>
+                    <div style="margin-left:25px;margin-top:5px;margin-right:10px;">
+
+                      <%= label_tag "During lending period partially?:"  %>
+
+                
+                  <% if lender_item_condition.partial_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.partial_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="partial_period_String"  class="RO_text" ><%= @cbe %></span>
+
+                      
+
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:25px;margin-top:5px;">
+                    <%= label_tag "Would you like to provide item proper-use training?"  %>
+                
+                
+                        
+                  <% if lender_item_condition.provide_proper_use_training == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif lender_item_condition.provide_proper_use_training == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="provide_proper_use_training_String"  class="RO_text" ><%= @cbe %></span>
+
+
+                  </div>
+                </td>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:15px;margin-top:5px;">
+                    <%= label_tag "Lender has specific conditions of lending:" %>
+                    <span><%= lender_item_condition.specific_conditions %></span>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+    
+
+

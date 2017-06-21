@@ -1,0 +1,140 @@
+<%= stylesheet_link_tag 'item_nav' , media: 'all', 'data-turbolinks-track' => true %>
+   <% whichType = getUserType %>
+   
+   <% if @item %>
+     <% iid = @item.item_id %>
+  <% else %>
+      <% iid = nil %>
+   <% end %>   
+   
+  <div class="center_content">
+  <ul id="nav" class="item_menu" >
+
+    <li class="subs"  >
+
+      
+        <% if whichType == 'borrow' %>
+          <li id="tab_item_1" >
+                <%= link_to "Item to Borrow", 'items/item'  %>
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li id="tab_item_1" >
+            <%= link_to  "Item to Lend",  'items/item' %>
+          </li>
+        <% elsif whichType == 'both'  %>
+          <li id="tab_item_1" >
+            <%= link_to "New Item - Borrowing and/or Lending",  'items/item' %>
+          </li>
+        <% end %>  
+
+    </li>
+
+
+      <% if (whichType == 'borrow' && !iid.nil?)  %>
+        <li id="tab_item_1">
+          <% @newItemLabel = "Item Contact Preferences"  %>
+          <%= link_to @newItemLabel, {:controller=>'contact_preferences', :action=> 'show', :id => iid} %>
+        </li>
+      <% elsif (whichType == 'lend' || whichType == 'both') && !iid.nil? %>
+        <li id="subs">
+          <a href="#s1">Item Preferences/Conditions</a>
+          <ul>
+            <li id="tab_item_11">
+              <%= link_to @newItemLabel, {:controller=>'contact_preferences', :action=> 'show', :id => iid} %>
+              <%= link_to  @newItemLabel %>
+            </li>
+            
+            <% if session[:cpID] %>
+            <li id="tab_item_12" >
+              <% @newItemLabelTrans = "Transfer Preferences"  %>
+              <%= link_to  @newItemLabelTrans,  {:controller=>'lender_transfers', :action=> 'show', :id => iid} %> %>
+            </li>
+            <% end %>
+            
+            <% if session[:LITid] %>
+            <li id="tab_item_13" >
+              <% @newItemLabelCond ="Lending Conditions"  %>
+              <% link_to @newItemLabelCond  ,  {:controller=>'lender_item_conditions', :action=> 'show', :id => iid} %> 
+            </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>     
+    
+
+    
+      <% if whichType == 'borrow' %>
+        <li id="tab_item_15" >
+         <% @newItemLabel ="Your Borrowing History"  %>
+          <%= link_to  @newItemLabel, item_url('borrow,individual,' + getParticipantID)   %>
+        
+        </li>
+        
+            <% if getCommunityID %>
+            <li id="tab_item_15" >
+              <% @newItemLabel ="Your Community's Borrowing History"  %>
+              <%= link_to @newItemLabel, item_path('borrow,community,' + getCommunityID) %>
+            </li>
+            <% end %>
+    
+      <% elsif whichType == 'lend' %>
+        <li id="tab_item_16">
+          <% @newItemLabel ="Your Lending History"  %>
+          <%= link_to  @newItemLabel, item_url('lend,individual,' + getParticipantID)   %>
+        </li>
+
+          <% if getCommunityID %>
+            <li id="tab_item_16" >
+              <% @newItemLabel = "Your Community's Lending History"  %>
+                <%= link_to @newItemLabel, item_path('lend,community,' + getCommunityID) %>
+            </li>
+         <% end %>    
+      <% end %>
+      
+      <% if whichType == 'both' %>
+        <li id="subs">
+          <a href="#s1">Your Lending or Borrowing History</a>
+          <ul>
+            <li id="tab_item_16">
+              <% @newItemLabel ="Your Borrowing History" %>
+              <%= link_to  @newItemLabel, item_url('borrow,individual,' + getParticipantID)   %>
+            </li>
+
+            
+              <% unless getCommunityID.nil? %>
+                <li id="tab_item_16" >
+                  <% @newItemLabel="Your Community's Borrowing History"  %>
+                  <%= link_to  @newItemLabel, item_url('borrow,community,' + getCommunityID)   %>
+                </li>
+              <% end %>
+            
+
+
+
+            <li id="tab_item_16">
+              <% @newItemLabel ="Your Lending History"  %>
+              <%= link_to  @newItemLabel, item_url('lend,individual,' + getParticipantID)   %>
+              
+            </li>
+
+              <% unless getCommunityID.nil? %>
+                <li id="tab_item_16" >
+                  <% @newItemLabel = "Your Community's Lending History"  %>
+                  <%= link_to  @newItemLabel, item_url('lend,community,' + getCommunityID)   %>
+                </li>
+              <% end %>         
+            
+          </ul>
+        </li>
+      <% end %>
+    
+
+    <li >
+      <%= link_to "Return to DashBoard", participant_url('nae'), {:title=>"Default Preferences/Conditions or Add Another Item" } %>
+    </li>
+
+  </ul>
+  
+  </div>
+  
+  

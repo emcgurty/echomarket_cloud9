@@ -1,0 +1,45 @@
+<div id="content" class="center_content" >
+   <div class="top" id="index_div" style="font-size:20px;margin-left:5px;">
+
+      <div style="position:relative;float:left;width:45%;margin-left:25px;margin-top:5px;margin-bottom:5px;"   >
+        <p>Welcome to EchoMarket!</p>
+        <p><span class="index_text" >Your goodwill resource for lending, borrowing and even trading or donating some of life's necessities, or items that you need just once and you want to avoid a one-time purchase.</span></p>
+        <p><span class="index_text" >Folks borrowing or lending as individuals or members within a Sharing Community.</span></p>
+        <p><span class="index_text" >In order to seek an item to borrow or offer an item to lend, you must be registered with EchoMarket.</span></p>
+        <p><span class="index_text" >Otherwise, go ahead and search EchoMarket for approved items to borrow, or items to lend...</span></p>
+         <%= link_to "Search" %>
+	   
+        <br />
+      </div>
+    </div>
+    <br />
+
+
+  <div style="position:relative;float:right;width:45%;margin-right:2px;margin-left:5px;margin-bottom:5px;background-color: ghostwhite;"  >     
+    
+	<% if session[:communityName] %>
+	  <% case session[:userAction] %>
+	  <% when "forgotUserPassword" %>
+		<%= render  :controller => 'users', :action => 'show', :id => 'forgotUserPassword'  %>
+      <% when "forgetUserName" %>
+ 		<%= render  :controller => 'users', :action => 'show', :id => 'forgotUserName'  %>
+      <% else %>
+	   <%= render template: "users/user_login" %>
+      <% end %>
+	  <% else %>
+	    <% case session[:userType] %>
+	    <% when "borrow" %>
+		<%= render template: "participant/b_history"  %>
+        <% when "lend" %>
+ 		<%= render template: "participant/l_history" %>
+        <% when "both" %>
+	      <%= render template: "participant/b_history" %>
+	     <br />
+	     <%= render template: "participant/l_history" %>
+      <% end %>
+	  
+	<% end %>
+
+  </div>
+ </div>
+   

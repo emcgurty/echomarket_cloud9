@@ -1,0 +1,100 @@
+    <%= stylesheet_link_tag 'creator_nav.css' , media: 'all', 'data-turbolinks-track': 'reload' %>
+    <% @whichType = getUserType %>
+    <% @iid = session[:item_id] %>
+    <% @completeLIC_LIT = session[:LITid] && session[:LICid] %>
+
+  <div class="center_content" >
+  <ul id="nav" class="creator_menu">
+
+    <% if session[:editable] == -1 %>
+    <li class="subs" id="tab_item_2" >
+      <%= link_to "EchoMarket Agreement", home_url("agreement") %>
+    </li>
+    <% end %>
+    
+    <% if session[:acceptID]  %>
+    <li class="subs" id="tab_item_2" >
+      <%= link_to  "Login Detail" , home_url("information") %>
+    </li>
+
+    <li class="subs" id="tab_item_2" >
+      <%= link_to "Creator Detail" %>
+    </li>
+    <% end %>
+
+    <% if session[:creatorDetailID]  %>
+    <li class="subs" id="tab_item_0" >
+      <%= link_to  "Community Detail", participant_url('community_detail')  %> %>
+    </li>
+    <% end %>
+    
+    <% if session[:comDetailID]  %>
+        <li class="subs" id="tab_item_1" >
+      <%= link_to "Community Members", participant_url('community_members')  %>
+    </li>
+    <% end %>
+    
+    
+    <% if session[:comDetailID] %>
+        <% if @whichType == 'borrow' %>
+          <li id="tab_item_4">
+            <% @newItemLabel = "Default Contact Preferences" %>
+            <%= link_to @newItemLabel %>
+          </li>
+        <% end %>  
+        <% if (@whichType == 'both' || @whichType == 'lend') && session[:partID]  %>
+          <li class="subs" id="tab_item_4" >
+            <a href="#s1">Default Item Preferences/Conditions</a>
+            <ul>
+              <li >
+                <% @newItemLabel = "Contact Preferences"  %>
+                <%= link_to @newItemLabel %>
+              </li>
+              <li >
+                <% @newItemLabelTrans = "Item Transfer Preferences"  %>
+                <%= link_to @newItemLabelTrans %>
+              </li>
+              <li >
+                <% @newItemLabelCond = "Item Lending Conditions"  %>
+                <%= link_to @newItemLabelCond %>
+              </li>
+            </ul>
+          </li>
+        <% end %>
+      <% end %>
+    
+
+    <% if session[:completeLIC_LIT] && session[:comDetailID]  && session[:editable] != -1 %>
+      <li class="subs" >
+          <% if @whichType == 'borrow' %>
+            <% if session[:partID] && session[:cpId] %>
+              <li id="tab_item_1" >
+                <%= link_to  "Borrowing..."  %>
+              </li>
+            <% end %>
+          <% elsif @whichType == 'lend' %>
+             <% if @completeLIC_LIT && (session[:partID] && session[:cpId])  %>
+              <li id="tab_item_1" >
+                <%= link_to "Lending..."  %>
+              </li>
+             <% end %> 
+          <% elsif @whichType == 'both' %>
+            <% if @completeLIC_LIT && (session[:partID] && session[:cpId])  %>
+              <li class="subs" id="tab_item_1" >
+                <a href="#s1">Lend or Borrow?</a>
+                <ul>
+                  <li>
+                    <%= link_to "I want to lend!" %>
+                  </li>
+                  <li>
+                    <%= link_to "I want to borrow!" %>
+                  </li>
+                </ul>
+              </li>
+            <% end %> 
+          <% end %>  
+      </li>
+    <% end %>
+
+  </ul>
+  </div>

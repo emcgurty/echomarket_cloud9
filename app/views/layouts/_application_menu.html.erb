@@ -1,0 +1,79 @@
+  <%= stylesheet_link_tag  'menu_nav.css', media: 'all', 'data-turbolinks-track': 'reload' %>
+  
+  <% if session[:username] %>
+	 <% @userAlias = session[:username] %>
+  <% else %> 
+	 <% @userAlias = "Friend" %>
+	<% end %> 
+
+    <ul id="nav" class="menu">
+      <li class="subs">
+        <%=link_to "EchoMarket: Welcome " + @userAlias  + "!"  %>
+        <ul>
+          <li>
+            <%= link_to "EchoMarket About", { :controller => 'home', :action => 'show', :id => 'about'} %>
+          </li>
+          <li class="subs" >
+            
+            <%= link_to "EchoMarket Instructions", { :controller => 'home', :action => 'show', :id => 'instructions'} %>
+          </li>
+        </ul>
+      </li>
+      <li class="subs"  >
+        <%= link_to "Search!",   { :controller => 'searches', :action => 'show', :id => 'search_items' }  %>
+      </li>
+	    
+        
+      <% if session[:username].nil? %>
+        <li class="subs">
+          <a href="#s1">Login</a>
+          <ul>
+            <li>
+            <% link_to "Login" %>               
+            </li>
+             <li>
+              <%= link_to "Login", {:controller => 'users', :action => 'app_options', :id => 'userLogin'} %>
+            </li>
+            <li>
+              <%= link_to "Forgot User Name", {:controller => 'users', :action => 'app_options', :id => 'forgotUserName'} %>
+            </li>
+            <li>
+              <%= link_to "Forgot User Password", {:controller => 'users', :action => 'app_options', :id => 'forgotUserPassword'} %>
+            </li>
+          </ul>
+        </li>   
+        <% end %>
+        <li class="subs">   
+          <a href="#s1">Register</a>                      
+          <ul>
+            <li>
+             	<%= link_to "As an Individual or Organization", user_user_registration_url(99) %>
+			  
+
+            </li>
+
+            <li>
+              <%= link_to "As a Community", user_community_registration_url(99) %>
+			  
+            </li>
+          </ul>
+        </li>
+
+	  <% if session[:username] %>
+      
+        <li class="subs">
+		    <%= link_to "Logout", {:controller => 'users', :action => 'user_logout'} %>
+        </li>
+        <li class="subs"  >
+		    <%= link_to "User DashBoard",  participant_url('main_user_detail') %>
+        </li>
+      <% end %>
+      
+	  
+	  <li class="subs"  >
+	   <%= link_to "EchoMarket Contact", {:controller => 'contacts', :action => 'show'} %>
+	   
+      </li>
+    </ul>
+
+  

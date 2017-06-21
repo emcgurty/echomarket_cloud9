@@ -1,0 +1,69 @@
+<%= stylesheet_link_tag 'item_nav' , media: 'all', 'data-turbolinks-track' => true %>
+
+<% whichType = item_type  %>
+
+  <div class="center_content">
+  <ul id="nav" class="item_menu" >
+
+    <li class="subs"  >
+
+        <% if whichType == 'borrow' %>
+          <li class="subs" id="item" >
+          <a href="#" onclick="displayExistingItemDivs('item');">Borrowing History</a>
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li class="subs" id="item" >
+            <a href="#" onclick="displayExistingItemDivs('item');">Lending History</a>
+          </li>
+        <% end %>  
+
+    </li>
+
+    <li class="subs"  >
+
+        <% if whichType == 'borrow' %>
+          <li class="subs" id="new" >
+          <a href="#" onclick="displayExistingItemDivs('new');">I want to Borrow Another Item</a>
+
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li class="subs" id="new" >
+          <a href="#" onclick="displayExistingItemDivs('new');">I want to Lend Another Item</a>
+          </li>
+        <% end %>  
+
+    </li>
+
+
+      <% if (whichType == 'borrow' )  %>
+        <li class="subs" id="preference">
+          <a href="#" onclick="displayExistingItemDivs('preference');">Edit Default Contact Preferences</a>
+        </li>
+      <% elsif (whichType == 'lend')  %>
+            <li class="subs" id="preference">
+          <a href="#" onclick="displayExistingItemDivs('preference');">Edit Default Contact Preferences</a>
+        </li>
+        <li id="subs">
+          <a href="#s1">Edit Default Item Transfer Preferences/Conditions</a>
+          <ul>
+              <li class="subs" id="transfer">
+              <a href="#" onclick="displayExistingItemDivs('transfer');">Edit Default Transfer Preferences</a>
+            </li>
+            
+            <li class="subs" id="condition">
+              <a href="#" onclick="displayExistingItemDivs('condition');">Edit Default Lending Conditions</a>
+            </li>
+            
+          </ul>
+        </li>
+      <% end %>     
+    
+    <li >
+      <%= link_to "User DashBoard", "window.history.back();"  %>
+    </li>
+
+  </ul>
+  
+  </div>
+  
+  

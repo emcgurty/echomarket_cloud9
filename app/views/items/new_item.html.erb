@@ -1,0 +1,48 @@
+ <%= javascript_include_tag 'new_item.js', :type => "text/javascript"  %>
+ 
+ <%= form_for :items, 
+ :url=> {:controller=>"items", :action => "update", :commit=>"new_item"}, 
+:html=> {:enctype=>"multipart/form-data", :method=>"post", :class=>"item_information", 
+:id=>"item_information", 
+:onsubmit => "return validateItemDashBoard();"} do |main| %>
+       <% if @item %>
+       <%  @item.item_description %>
+       <% end %>
+
+   <% if @item %>
+    <%= render :partial => 'layouts/new_item_menu', :locals => {:item_type => @item.item_type, :editable => 1, 
+      :main => main, :display => ( @item.item_description ? 1 : 0 )} %>
+   <% else %>
+    <%= render :partial => 'layouts/new_item_menu', :locals => {:item_type => getUserType, :editable => 1,  
+     :main => main, :display => 0 } %>
+   <% end %>
+  
+     <div id="new" class="new_item new"  >
+         <%= render :partial => 'items/user_item', :locals  => {:item => @item, :editable => 1, :main => main} %>
+     </div>
+     
+     <% if @item %>
+     <% unless @item.item_description.nil?  %>
+      <div id="preference" class="new_item preference" >
+      <%= render :partial => 'contact_preferences/user_contact_preferences',  :locals => {:item => @item, 
+               :participant => @participant, :contact_preference => @contact_preference, :editable => 1,  :main => main } %>
+     </div>
+    
+     
+      <% if getUserType == 'lend' || getUserType == 'both' %>
+      <div id="transfer" class="new_item transfer">
+      <%= render :partial => 'lender_transfers/lender_transfers', 
+      :locals => {:item => @item, :participant => @participant, 
+      :lender_transfer => @lender_transfer, :editable => 1,  :main => main } %>
+     </div>
+     
+     <div id="condition" class="new_item condition" >
+      <%= render :partial => 'lender_item_conditions/lender_conditions', 
+      :locals => {:item => @item, :participant => @participant, 
+      :lender_item_condition => @lender_item_condition, :editable => 1,  :main => main } %>
+     </div>
+     <% end %>
+<% end %>
+<% end %>
+    <% end %>
+  

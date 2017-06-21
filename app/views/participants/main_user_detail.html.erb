@@ -1,0 +1,72 @@
+ <%= javascript_include_tag 'main_user_detail.js', :type => "text/javascript"  %>
+ <%= javascript_include_tag 'user_detail.js', :type => "text/javascript"  %>
+
+ <% @cDiv = session[:current_div] %>
+ <%= form_for :participant, :url=> {:controller=>"participants", :action => "update_details" }, :html=> {:class=>"user_details",  :id=>"user_detals"} do |f| %>
+   <body onload = "displayUserDetailDivs('<%= @cDiv %>');">
+   <% if @participant %>
+    <%= render :partial => 'layouts/user_detail_menu',  :locals => {:participant => @participant, :editable  => 1, :f => f } %>
+   <% else %>
+    <%= render :partial => 'layouts/user_detail_menu',  :locals => {:participant => nil, :participant_id => getParticipantID, :editable  => 1, :f => f } %>
+   <% end %>
+   <div class="center_content" style="color:maroon;font-size:4;">
+            <p><%= getUserAlias %>: USER DASHBOARD</p>
+            <%= f.submit "Save!", {:class=> "right_div"} %>
+            <span class="required_field_text">( </span>              
+            <span class="required_fields">*</span>              
+            <span class="required_field_text"> = Required Information )</span>           
+
+   </div>         
+   
+     <% if getUserType == 'both' || getUserType == 'lend' %>
+     <% unless ContactPreference.find_by(participant_id: getParticipantID).nil? %>
+     <div id="transfer" class="user_detail" >
+        <%= render :partial => 'lender_transfers/lender_transfers',  :locals => {:item => @item, 
+               :lender_transfer => @lender_transfer, :editable => 1, :main => f } %>
+     </div>
+     <% end %>
+     
+     <% unless LenderTransfer.find_by(participant_id: getParticipantID).nil? %>
+     <div id="condition" class="user_detail" >
+      <%= render :partial => 'lender_item_conditions/lender_conditions',  :locals => {:item => @item, 
+               :lender_item_condition => @lender_item_condition, :editable => 1, :main => f } %>
+     </div>
+     <% end %>
+    
+     <% end %>
+     
+
+    <div id="preference" class="user_detail" >
+    <%= render :partial => 'contact_preferences/user_contact_preferences',  :locals => {:item => nil, 
+               :participant => @participant, :contact_preference => @contact_preference,  :editable => 1, :main => f } %>
+    </div>
+    
+    
+    <div id="information" class="user_detail" >
+       <%= render :partial => "users/user_login_update", :locals => {:user => @user, :editable => 1, :main => f} %>
+     </div>
+   
+     <% if getCommunityID != -9 %>
+     <div id="community" class="user_detail" >
+       <%= render :partial => 'communities/community_detail',  :locals => {:community => @community, :main => f} %>
+     </div>
+     
+     <% if session[:comDetailID]  %>
+     <% if @creator %>
+     <div id="member" class="user_detail" >
+       <%= render :partial => 'participants/community_members',  
+                 :locals => {:participant => @participant, :creator => @creator, :main => f, :editable => 1 } %>
+     </div>
+     <% end %>
+     <% end %>
+     <% end %>
+     
+     <div id="nae" class="user_detail" >
+       <%= render :partial => 'participants/user_nae',  :locals => {:item => @item, 
+               :participant => @participant, :contact_preference => @contact_preference, :editable => 1, :main => f } %>
+     </div>
+     
+      
+     
+     </body> 
+   <% end %>

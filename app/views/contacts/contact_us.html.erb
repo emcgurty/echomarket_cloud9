@@ -1,0 +1,53 @@
+    <%= form_for :contact, :url=> {:controller=>"contacts", :action => "create", :commit=>"contacts"}, :html=> {:class=>"login",  :id=>"contacts_form"} do |f| %>
+      <head>
+        <%= f.hidden_field :user_id %>
+      </head>
+      <% if defined? @contact %>	
+      <% if @contact.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@contact.errors.count, "error") %> prohibited this user from being saved:</h2>
+    
+          <ul>
+          <% @contact.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <% end %> 
+
+       <div class="center_content" >
+        <div style="margin-left:15px;margin-top:25px;" >
+         <span style="font-size:20px;margin-left:5px;">Contact EchoMarket</span>
+		      <%= link_to "Nevermind", {  }, {:onclick=>"window.history.back();", :style => 'margin-left: 15px'} %>
+            
+        </div> 
+
+      <div style="margin:25px;float:left;" >
+
+        <div >
+		  <%= f.label :email %>
+		  <%= f.text_field :email %>
+		  <span class="error-message" id="contact_us_email_error"></span>
+        </div>
+        <br />
+        <div >
+          <%= f.label :subject %>
+		  <%= f.text_field :subject %>
+          <span class="error-message" id="contact_us_email_error"></span>
+
+        </div>
+        <br />
+        <div >
+		<%= f.label :comments %>
+		  <%= f.text_area :comments %>
+          <br />
+          <div id="textarea_feedback"></div>
+          <span class="error-message" id="contact_us_error"></span>
+        </div>
+        <br />
+        <%= f.submit "Send Comments" %>
+      </div>
+	  </div>
+    <% end %>
+

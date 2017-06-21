@@ -1,0 +1,35 @@
+ <%= javascript_include_tag 'readonly.js', :type => "text/javascript"  %>
+ <%= render :partial => 'layouts/readonly_item_menu', :locals => {:item_type => @item.item_type } %>
+ <%= form_for :item, {:enctype=>"multipart/form-data"} do |f| %>
+
+      <div id="preference"  class="search">
+      <%= render :partial => 'contact_preferences/contact_preferences_readonly',  :locals => {:item => @item, :participant => @participant,       :contact_preference => @contact_preference } %>
+     </div>
+     
+     <div id="item"  class="search" >
+       <%= render :partial => 'items/item_readonly', :locals => {:item => @item } %>
+     </div>
+     
+     <div id="nae"  class="search">
+      <%= render :partial => 'participants/nae_readonly', :locals => {:item => @item, :participant => @participant } %>
+     </div>
+     
+    
+    
+      <% if @item.item_type == 'lend' %>
+      <div id="transfer" class="search">
+      <%= render :partial => 'lender_transfers/lender_transfer_readonly', 
+      :locals => {:item => @item, :participant => @participant, 
+      :lender_transfer => @lender_transfer } %>
+     </div>
+     
+     <div id="condition"  class="search">
+      <%= render :partial => 'lender_item_conditions/lender_conditions_readonly', :locals => {item: @item, participant: @participant, 
+      lender_item_condition: @lender_item_condition } %>
+     </div>
+     <% end %>
+     
+  
+   
+    <% end %>
+  

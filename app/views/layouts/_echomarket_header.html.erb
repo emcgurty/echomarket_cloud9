@@ -1,0 +1,20 @@
+    <div class="center_content">
+
+      <div id="top" align="center" style="background-color: white;margin-top:25px;margin-bottom: 25px;">
+        <h1>
+          ECHO 
+		        <%= image_tag("echo_market.png")  %>
+          MARKET
+        </h1> 
+       <h2>
+		<% unless session[:communityName] %>
+            Building Communities of Shared Goods
+		<% else %>
+            <%=  session[:communityName] %>
+		<% end %>
+		</h2>
+        <h3 style="color:maroon;"> 
+          EchoMarket is in its 'Alpha Phase', its design and functionality are hopefully operating as intended.  Please use menu option 'EchoMarket Contact' if you encounter problems or you would like to make a suggestion.
+        </h3>
+      </div>
+    </div>

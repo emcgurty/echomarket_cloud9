@@ -1,0 +1,46 @@
+     <div id="content" class="center_content" >
+          <div class="top" >
+        <div style="margin:10px;margin-top:25px;" >
+          <span><%= getUserAlias + ": USER DASHBOARD" %></span>
+		  
+		   <% if editable == -1 %>
+		   <%= f.submit "I agree..." , :class=>"right_div" %>
+		   <% else %>
+		   <%= link_to "I have read", {  }, {:onclick=>"window.history.back();" } %>
+		   <% end %>
+
+        </div> 
+        <div style="margin:10px;" >
+          <span>EchoMarket Agreement...</span >
+        </div>
+      </div> 
+      <%= render :partial => "home/agreement_text" %>
+
+      <div style="margin-left:25px;margin-top:5px;margin-bottom:5px;float:left;">
+        <ul >
+          <li style="margin:5px;">
+            <%= f.label :instructions,  "I have read EchoMarket Instructions."    %>
+			<span class="required_fields">*</span>
+              	<%= f.check_box :instructions %>
+
+            
+            <span class="error-message" id="instructions_span" ></span>
+          </li>
+          <li style="margin:5px;">
+            <%= f.label  :goodwill, "I am acting and participating in a spirit of goodwill."   %>
+			<span class="required_fields">*</span>
+			    <%= f.check_box :goodwill %>
+
+            
+            <span class="error-message" id="goodwill_span" ></span>
+          </li>
+          <li style="margin:5px;">
+            <%= f.label :age_18_or_more, "I have achieved the age of 18 years or more."   %>
+			<span class="required_fields">*</span>
+                <%= f.check_box :age_18_or_more %>
+            
+            <span class="error-message" id="age18OrMore_span" ></span>
+          </li>
+        </ul>
+      </div>
+	</div>

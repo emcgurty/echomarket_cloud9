@@ -1,0 +1,317 @@
+/*tr:nth-child(odd) {background: #DEEBEC;} 
+tr:nth-child(even) {background: #F2F3F4;}*/
+
+/*table.personal {
+  border-collapse: collapse;
+  border-spacing: 0;
+  empty-cells: hide;
+}*/
+
+/*td:empty {
+  visibility: hidden;
+}
+
+tr:empty {
+  visibility: hidden;
+}*/
+
+
+
+.notice {
+  color:indigo;
+  font-size:16px;
+  
+}
+
+
+li {
+  list-style: none;
+  
+}
+hr {
+  border: 1px dotted indigo;
+  border-style: none none solid; 
+  color: 	#D8D8D8 ; 
+  background-color: 	#D8D8D8 ;
+
+}
+
+input[type=radio] + label {
+  color: #2A3F3F;
+  font-style: italic;
+} 
+input[type=radio]:checked + label {
+  color: #045491;
+  font-style: normal;
+} 
+
+input {
+  margin-left:5px;
+}
+
+label {
+  margin-left: 5px;
+  color:#0B5345;
+  font-size:16px;
+  font-weight: bold;
+}
+
+.RO_text {
+  margin-left: 5px;
+  color:darkcyan;
+  font-size:16px;
+
+}
+.div_center {
+  position:relative;
+  display:inline;
+  float:left;
+  width:100%;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -50px;
+  width: 100px;
+  height: 100px;
+  color: indigo;
+  font-size: 12px;
+
+}
+
+span.required_fields {
+  color:red;
+  font-size:16px;
+
+}
+span.required_field_text {
+  color: indigo;
+  font-size:16px;
+
+}
+form {
+  margin: 0;
+  padding: 0;
+
+}
+
+div.borrower_registration {
+  width:500px;
+  margin: 0;
+  border: none;
+  height:auto;
+  padding:0;  
+}
+
+div.top {
+  position:  relative;
+  display:block;
+  background-color: #ffffff;
+  color:#000033;
+  font-weight: bold;
+  width:inherit;
+  padding:inherit;
+  align-content: left;
+  margin: inherit;
+
+}
+
+div.application_footer {
+  position:relative;
+  float:left;
+  bottom: 20px;
+  width: 100%;
+  background-color: white;
+  margin: 15px 0 0 0;
+
+}
+
+div#box a {
+  margin: 0;
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%) 
+
+}
+
+div.application_footer p {
+  margin-top: 25px;
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%) 
+}
+
+div.contact_information {
+  position: relative;
+  display:none;
+  float:left;
+  padding: inherit;
+  width:inherit;
+  height:auto;
+  margin:inherit;
+  align-content: left;
+
+}
+
+.app_panel {
+
+  border:#3B5998 double medium ;
+  height:auto;
+}
+
+
+
+.div_p {
+  position: relative;
+  float:left;
+  display:block;
+  background-color: #ffffff;
+  color: #000033;
+  font-weight: bold;
+  width:100%;
+  padding: inherit;
+  align-content: left;
+
+}
+.right_div {
+
+  position: relative;
+  float:right;
+  padding:2px 2px;  
+  color:block;
+  font-size: 18px;
+  font-weight:normal;
+  margin-right:15px;
+
+
+
+}
+
+
+.div_white {
+
+  padding:3px 20px 10px 3px;
+  clear:both;
+  /* opacity:0; */
+  display:inline;
+  width:100%;
+  float:left;
+  margin-left:25px;
+  height:1px;
+  color: red;
+}
+
+
+.right_span {
+
+  display:inline;
+  clear:both;
+  float:left;
+  padding:2px 2px;  
+  color:white;
+  font-size: 14px;
+  font-weight:normal;
+  margin-right:15px;
+  margin-top:15px;
+
+}
+
+#bottom {
+
+  position:absolute;
+  float:left;
+
+}
+
+select {
+
+  font-size: 16px;
+
+}
+
+
+
+body {
+  background-color: #ffffff;
+  font-size: 16px;
+  font-family: Arial, "Arial CE", "Lucida Grande CE", lucida, "Helvetica CE", sans-serif;
+  color: #000000;  
+  margin: 5px;
+  border-top:#3B5998 double thin;
+}
+
+h1 {
+  font-size:  40px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+  color: #045491;
+}
+
+h2 {
+  font-size:  30px;
+  font-weight: bold;
+  font-style: italic;
+  margin: 0px;
+  padding: 0px;
+  color: #045491;
+}
+
+a:link, a:visited {
+  color: #045491;
+  font-weight : bold;
+  text-decoration: none;
+  font-size:  16px;
+  /*  font-style: italic;*/
+  /*  text-shadow: -1px -1px 1px #fff, 1px 1px 1px black;
+    color:  indigo;
+    opacity: 0.5;*/
+  /*  border-radius: 2px;
+    border-color: black;
+    border-style: solid 1px ;
+    padding: 5px;*/
+}
+
+a:link:hover, a:visited:hover  {
+  color: #045491;
+  font-weight : bold;
+  text-decoration : underline;
+}
+
+.center_content {
+  position: relative;
+  /*//float:left;*/
+  width:960px;
+  margin: 0 auto;
+
+  background-color: white;
+  border: 5px;
+  border-color: #D0ECE7;
+
+  /*// align-content: center;*/
+}
+
+.error-message {
+  color: #d20005;
+  font-style: oblique;
+  text-decoration: none;
+}
+
+span.radius {
+  color: indigo;
+  font-style: oblique;
+
+}
+
+.index_text {
+
+  color: indigo;
+  font-size: 18px;
+  font-style: normal;
+
+}

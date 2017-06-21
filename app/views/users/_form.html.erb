@@ -1,0 +1,87 @@
+<%= form_for(user) do |f| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= f.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :username %>
+    <%= f.text_field :username %>
+  </div>
+
+  <div class="field">
+    <%= f.label :community_name %>
+    <%= f.text_field :community_name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date_created %>
+    <%= f.datetime_select :date_created %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date_updated %>
+    <%= f.datetime_select :date_updated %>
+  </div>
+
+  <div class="field">
+    <%= f.label :remote_id %>
+    <%= f.text_field :remote_id %>
+  </div>
+
+  <div class="field">
+    <%= f.label :crypted_password %>
+    <%= f.text_field :crypted_password %>
+  </div>
+
+  <div class="field">
+    <%= f.label :salt %>
+    <%= f.text_field :salt %>
+  </div>
+
+  <div class="field">
+    <%= f.label :reset_code %>
+    <%= f.text_field :reset_code %>
+  </div>
+
+  <div class="field">
+    <%= f.label :activated_at %>
+    <%= f.date_select :activated_at %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_alias %>
+    <%= f.text_field :user_alias %>
+  </div>
+
+  <div class="field">
+    <%= f.label :user_type %>
+    <%= f.text_field :user_type %>
+  </div>
+
+  <div class="field">
+    <%= f.label :role_id %>
+    <%= f.number_field :role_id %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

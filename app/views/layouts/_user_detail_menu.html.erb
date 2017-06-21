@@ -1,0 +1,95 @@
+    <%= stylesheet_link_tag 'creator_nav' %>
+    <% whichType = getUserType %>
+
+ <div class="center_content" >
+  <ul id="nav" class="user_detail_menu">
+
+
+    <li class="subs" id="information" >
+    <a href="#" onclick="displayUserDetailDivs('information');">Login Information</a>            
+    </li>
+
+   <li class="subs" id="nae" >
+    <a href="#" onclick="displayUserDetailDivs('nae');">Participant Information</a>            
+    </li>
+    
+  
+    <% if getCommunityID != -9 %>
+    <li class="subs" id="community_parent" >
+
+      <a href="#s1">Community</a>
+
+     <ul>
+     
+     <li class="subs" id="community" >
+      <a href="#" onclick="displayUserDetailDivs('community');">Community Detail</a>            
+     </li>
+     <% if session[:comDetailID] %>
+     <li class="subs" id="member" >
+      <a href="#" onclick="displayUserDetailDivs('member');">Community Members</a>            
+     </li>
+     <% end %>
+    
+    </ul>
+    </li>
+    <% end %>
+  
+    
+    <li class="subs" id="perference_parent" >
+
+      <% if session[:partID]  %>
+          <a href="#s1">Default Item Preferences/Conditions</a>
+      <% end %>
+
+      <ul>
+
+          <% if session[:partID]  %>
+          <li class="subs" id="preference" >
+          <a href="#" onclick="displayUserDetailDivs('preference');">Contact Preferences</a>            
+          </li>
+          <% end %>
+        
+        <% if whichType == 'both' || whichType == 'lend' %>
+              <% unless ContactPreference.find_by(participant_id: getParticipantID).nil? %>
+                 <li class="subs" id="transfer" >
+                 <a href="#" onclick="displayUserDetailDivs('transfer');">Item Transfer Preferences</a>            
+                </li>
+              <% end %>
+            
+            
+              <% unless LenderTransfer.find_by(participant_id: getParticipantID).nil?  %>
+                 <li class="subs" id="condition" >
+                  <a href="#" onclick="displayUserDetailDivs('condition');">Item Lending Conditions</a>            
+                </li>
+              <% end %>
+          <% end %>
+      </ul>
+    </li>
+   
+
+     <% if (session[:LICid] && session[:LITid] && (whichType == 'both' || whichType == 'lend')) || 
+           (session[:cpId] && whichType == 'borrow')   %>
+     <li class="subs" id="tab_item_15" >
+
+      <a href="#s1">Items</a>
+
+       <ul>
+
+        <% unless Item.find_by(participant_id: getParticipantID ).nil?  %>
+        <li class="subs" >
+          <%= link_to "Item History", 
+              {:controller=> 'items', :action => 'existing_results', :id => getParticipantID}  %>      
+        </li>
+        <% end %>
+
+        <li class="subs" id="tab_item_14" >
+          <%= link_to  "New Item", {:controller=> 'items', :action => 'new_item', :id => getParticipantID}  %>      
+        </li>
+       </ul>    
+   </li>
+   <% end %>
+    
+  </ul>
+  
+           
+</div>

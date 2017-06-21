@@ -1,0 +1,221 @@
+<div id="form_contact_preference_readonly" class="center_content" >
+
+           <% @displayAltAddress = (participant ? participant.display_alternative_address : nil) %>
+           <% @displayPrimaryAddress = (participant ? participant.display_address : nil )%>
+           <% @displayHomePhone = (participant ? participant.display_home_phone : nil ) %>
+           <% @displayCellPhone = (participant ? participant.display_cell_phone : nil ) %>
+           <% @displayAlternativePhone = (participant ? participant.display_alternative_phone : nil ) %>
+
+                <div  class="div_p"  >
+                <div style="margin:10px;" >
+                  <span>Contact Preferences</span>
+                </div>
+                </div>
+
+            <div  class="div_p"  >
+                  <div style="margin:10px;" >
+                    <span class="RO_text">##</span>
+                    <% if @iid == 'borrow' %>
+                    <span class="RO_text" >-- means 'Selection Not Made. Borrower may be indifferent.'></span>
+                    <% else %>
+                    <span class="RO_text" >-- means 'Selection Not Made. Lender may be indifferent.'></span>
+                    <% end %>
+                  </div>
+                </div>
+
+           <% if @displayPrimaryAddress || @displayAltAddress %>
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+               <p>Contact Option: By Address..</p>
+              </div>
+            </div>
+
+            <div style="display:block;float:left;height:auto;margin-top:5px;">
+              <div style="float:left;margin-left:25px">
+                <div id="postalWithContactAddress" >    
+
+                  <%= label_tag  "Which Address?"  %>
+                     
+                        <% if contact_preference.use_which_contact_address  == 0 %>
+                           <% @whichAddress = "No address contact" %>
+                        <% elsif contact_preference.use_which_contact_address == 1 %>
+                           <% @whichAddress = "Either address is fine" %>
+                        <% elsif contact_preference.use_which_contact_address == 2 %>
+                           <% @whichAddress ="Your Alternative Address" %>
+                        <% elsif contact_preference.use_which_contact_address == 3 %>
+                           <% @whichAddress = "Use your Primary Address" %>
+                        <% else %>
+                           <% @whichAddress ="##" %>
+                        <% end %>
+                       
+                     <span id="use_which_contact_address"  class="RO_text" ><%= @whichAddress %></span>
+
+          
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <span>Contact Option: By Chat...</span>
+            </div>
+          </div>
+
+          <div style="display:block;float:left;height:auto;margin-top:10px;">
+            <div style="float:left;margin-left:25px;">
+              <%= label_tag  "Contact by chat?:"  %>
+
+                    <% if contact_preference.contact_by_chat == 0 %>
+                       <% @cbe = "No" %>
+                    <% elsif contact_preference.contact_by_chat== 1 %>
+                       <% @cbe = "Yes" %>
+                    <% else %>
+                       <% @cbe = "##" %>
+                    <% end %>
+                 <span id="contact_by_chat" class="RO_text" ><%= @cbe %></span>
+
+
+            </div>
+          </div>
+
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <span>Contact Option: By Email...</span>
+            </div>
+          </div>
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="float:left;margin-left:25px;">
+               <% @displayAltEmail = getdisplay_alternative_email %>
+               <% @udae = getuserAlternativeEmail %>
+              <%= label_tag   "Which E-Mail Address?:"  %>
+
+                    <% if contact_preference.contact_by_email == 0 %>
+                       <% @cbe = "Neither email address" %>
+                    <% elsif contact_preference.contact_by_email == 1 %>
+                       <% @cbe = "Either email address" %>
+                    <% elsif contact_preference.contact_by_email == 2 %>
+                       <% @cbe = "Alternative email address" %>
+                    <% elsif contact_preference.contact_by_email == 3 %>
+                       <% @cbe = "Login email address" %>
+                    <% else %>
+                       <% @cbe = "##" %>
+                    <% end %>
+                   
+                 <span id="contactByEmail" class="RO_text" ><%= @cbe %></span>
+
+
+            </div>
+          </div>
+
+           <% if @displayHomePhone  || @displayCellPhone || @displayAlternativePhone %>
+            <div  class="div_p"  id="display_phone">
+              <hr />
+              <div style="margin:10px;" >
+               <span>Contact Option: By Phone...</span><br />
+               <span>Can interested EchoMarket participants call you at your...</span>
+              </div>
+            </div>
+          <% end %>  
+
+          <div style="float:left;margin-left:25px;display:block;" >
+             <% if @displayHomePhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_homePhone" class="phone" >
+                <%= label_tag   "... home phone?:"  %>
+
+                      <% if contact_preference.contact_by_home_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif contact_preference.contact_by_home_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contactByHomePhone" class="RO_text" ><%= @yn %></span>
+
+              </div>
+            <% end %>  
+
+            <% if @displayCellPhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_cell_phone" class="phone" >
+                <%= label_tag  "... cell phone?:"  %>
+
+                      <% if contact_preference.contact_by_cell_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif contact_preference.contact_by_cell_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contact_by_cell_phone" class="RO_text" ><%= @yn %></span>
+
+              </div>
+            <% end %>  
+            
+             <% if @displayAlternativePhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_alternative_phone" class="phone" >
+                <%= label_tag  "... home phone?:"  %>
+                   
+                      <% if contact_preference.contact_by_alternative_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif contact_preference.contact_by_alternative_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contactByAlternativePhone" class="RO_text" ><%= @yn %></span>
+                  
+              </div>
+            <% end %>  
+
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <p>Contact Option: By Social Media...</p>
+            </div>
+          </div>
+
+          <div style="float:left;margin-left:25px;">
+
+
+              <table  style="margin-left:15px;">
+                <tr>
+                  <td>
+                    <%= label_tag  "Facebook Account:"  %>
+                     <span  style="margin-left:5px;"   class="RO_text" ><%= contact_preference.contact_by_Facebook %></span>
+                  </td>
+                  <td>
+                    <%= label_tag  "LinkedIn Account:"  %>
+                     <span  style="margin-left:5px;"   class="RO_text"  ><%= contact_preference.contact_by_LinkedIn %></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= label_tag  "Twitter Account:" %>
+                     <span   style="margin-left:5px;"   class="RO_text"  ><%= contact_preference.contact_by_Twitter %></span>
+                  </td>
+                  <td>
+                    <%= label_tag  "Instagram Account:" %>
+                     <span  style="margin-left:5px;"   class="RO_text"  ><%= contact_preference.contact_by_Instagram %></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= label_tag  "Social Media:"  %>
+                     <span style="margin-left:5px;"  class="RO_text" ><%= contact_preference.contact_by_other_social_media %></span>
+                  </td>
+                  <td>
+                    <%= label_tag  "Social Media Access:" %>
+                     <span style="margin-left:5px;"  class="RO_text" ><%= contact_preference.contact_by_other_social_media_access %></span> 
+                  </td>
+                </tr>
+              </table>
+
+          </div>
+        </div>
+  
+</div>
+  

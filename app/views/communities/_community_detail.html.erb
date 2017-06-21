@@ -1,0 +1,135 @@
+<% @cid = getCommunityID %>
+
+<%= main.fields_for :community, @community  do |cd_field| %>
+
+      <div class="center_content" >
+
+        <div id="community_detail" class="contact_information" >
+            <div style="margin:10px;margin-top:25px;" >
+              <span>Community Detail</span>
+                 <% if session[:comDetailID]  %>
+                    <div class="right_div"> 
+                       <%= link_to "Community Members", participants_community_members_path() %>
+                    </div>
+                 <% end %>
+            </div> 
+
+          <table style="width:95%;margin-left: 50px" align="center" id="community_detail_table">
+            <tr>
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                <span class="required_fields" style="margin-left:7px;color:maroon;" >
+                    Registration Community Name: <%= getCommunityName %></span>  
+                    <%= cd_field.hidden_field :community_changed, :value=> 0  %>
+                    <%= cd_field.hidden_field :community_id  %>
+                    <%= cd_field.hidden_field :user_id, :value => getUserID  %>
+              </td>
+            </tr>            
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+
+                <%= cd_field.label :community_name  %>
+                  <span id="community_name" class="required_fields">*</span>       
+                  <%= cd_field.text_field(:community_name, {:style=>"margin-left:10px;margin-right:10px;", maxlength:50}) %>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                <%= cd_field.label :email, getEmail %>
+                <span id="email" class="required_fields">*</span>       
+                  <%= cd_field.text_field(:email, {size:25, maxlength:50}) %>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                <span class="required_fields" style="margin-left:7px;color:maroon;" >Name of Community Leader, may differ from a Community Creator</span> 
+              </td>
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                <%= cd_field.label :first_name, "Leader First Name:" %>
+                <span class="required_fields">*</span>       
+                <%= cd_field.text_field(:first_name, {:style=>"margin-left:10px", size:16,maxlength:24 }) %>
+                <%= cd_field.label :mi, "Middle Initial:" %>
+                <%= cd_field.text_field(:mi, {:style=>"margin-left:10x", maxlength:1, size:2}) %>
+                <%= cd_field.label :last_name,"Leader Last Name:" %>
+                <span id="lastName" class="required_fields">*</span>       
+                <%= cd_field.text_field(:last_name, {:style=>"margin-left:10px", size:16,maxlength:24})  %>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                <span class="required_fields" style="margin-left:7px;color:maroon;" >Community Address, may differ from a Creator's Primary Address</span> 
+              </td>
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :address_line_1 %>
+                <span id="addressLine1" class="required_fields">*</span>       
+                  <%= cd_field.text_field(:address_line_1, {:style=>"margin-left:10px",  :class=>"address", maxlength:24 }) %>
+              </td>
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :address_line_2 %>
+                  <%= cd_field.text_field(:address_line_2, {:style=>"margin-left:10px",  :class=>"address", maxlength:24 }) %>
+              </td>
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+
+                <%= cd_field.label :city %>
+                <span id="city" class="required_fields">*</span>       
+                  <%= cd_field.text_field(:city, {:style=>"margin-left:10px",  :class=>"address", maxlength:24 }) %>
+              </td>
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :us_state_id, "State:" %>
+                <% if @community %>
+                <%= cd_field.collection_select :us_state_id, UsState.all, :id, :state_name %>
+                <% else %>
+                <%= cd_field.collection_select :us_state_id, UsState.all, :id, :state_name, {:selected => "-2"} %>
+                <% end %>
+              </td>
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :province, "Province:"  %>
+                <%= cd_field.text_field(:province, {:style=>"margin-left: 5px;", :class=>"address", maxlength:24}) %>
+                </h:inputText>
+
+              </td>
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :region, "Region:" %>
+                <%= cd_field.text_field(:region, {:style=>"margin-left: 5px;", :class=>"address",  maxlength:24}) %>
+              </td>
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :postal_code, "Postal Code:" %>
+                <span id="postal_code" class="required_fields">*</span>
+                <%= cd_field.text_field(:postal_code, {:style=>"margin-left:10px", :class=>"address", maxlength:24})  %> 
+              </td>
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :country_id, "Country:" %>
+                <span id="countryId" class="required_fields">*</span>
+                <%= cd_field.collection_select :country_id, Country.all, :country_id, :country_name %>
+              </td>
+            </tr>
+            <tr >
+              <td colspan="2" style="padding-top: 7px;padding-bottom: 7px;align-content: center;">
+                <input type="button" value="Clear Address Detail" onclick="clearCommunityDefaultAddress();"  />
+              </td>
+
+            </tr>
+            <tr >
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                  <%= cd_field.label :cell_phone, "Cell Phone:" %>
+                  <%= cd_field.text_field( :cell_phone, {:style=>"margin-left: 5px;", maxlength:20}) %>
+              </td>
+              <td style="padding-top: 7px;padding-bottom: 7px;">
+                <%= cd_field.label :home_phone, "Home Phone:" %>
+                <%= cd_field.text_field( :home_phone, {:style=>"margin-left: 5px;", maxlength:20}) %>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+      </div>
+    <% end %>

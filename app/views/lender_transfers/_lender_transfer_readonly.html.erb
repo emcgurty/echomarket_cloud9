@@ -1,0 +1,235 @@
+      <div id="lender_transfer_readonly" class="center_content" >
+
+          <div id="form_lender_to_borrower" class="center_content" >
+      
+            <% @iid = item.item_type %>
+            <% @displayAltAddress =     participant.display_alternative_address %>
+            <% @displayPrimaryAddress = participant.display_address %>
+              <div  class="top"  >
+              <div style="margin:10px;" >
+                <span>Lender Transfer Preferences</span>
+                </div>
+              </div>
+            
+            <div  class="top"  >
+              <div style="margin:10px;" >
+                    <span class="RO_text">##</span>
+                    <% if @iid == 'borrow' %>
+                    <span>-- means 'Selection Not Made. Borrower indifferent</span>
+                    <% else %>
+                    <span>-- means 'Selection Not Made. Lender indifferent</span>
+                    <% end %>
+                  </div>
+                </div>
+            
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span>How lender would like a borrower to receive his/her item:</span>
+            
+              </div>
+            </div>
+                        <% if lender_transfer.borrower_comes_to_which_address  %>
+                        <% if lender_transfer.borrower_comes_to_which_address == 0 %>
+                          <% @cbe =  "No pick up at any address" %>
+                        <% elsif lender_transfer.borrower_comes_to_which_address > 1  %>
+                          <% @cbe = "Either address is fine" %>
+                        <% else %>
+                          <% @cbe = "##" %>
+                        <% end %>  
+                        <span class="RO_text" ><%= @cbe %></span>
+                        <% else %>
+                        <span class="RO_text" >##</span>
+                        <% end %>  
+                </div>
+                <hr />
+             
+
+
+          <div class="center_content"> 
+              <%= label_tag "Lender Will meet with borrower at an agreed location?:"  %>
+
+
+
+                      <% if lender_transfer.meetBorrowerAtAgreed == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.meetBorrowerAtAgreed == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+
+            </div>
+            <div id="meetAtAgreedOption" class="center_content">  
+              <%= label_tag "Lender's choice of location?:"  %>
+
+                    <% if lender_transfer.meetBorrowerAtAgreedLenderChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.meetBorrowerAtAgreedLenderChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+              <br />
+
+              <div class="center_content">  
+              <%= label_tag "Borrower's choice of location?:"  %>
+
+
+                    <% if lender_transfer.meetBorrowerAtAgreedBorrowerChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.meetBorrowerAtAgreedBorrowerChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+</div>
+              <div class="center_content">
+              <%= label_tag "Mutual Agreement?:"  %>
+
+                    <% if lender_transfer.meetBorrowerAtAgreedMutual == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.meetBorrowerAtAgreedMutual == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+              <hr />
+              </div>
+            </div>
+
+
+
+
+            <div class="center_content">                    
+
+              <%= label_tag "Lender will deliver to borrower preferred location?:"  %>
+                    <% if lender_transfer.will_deliver_to_borrower == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.will_deliver_to_borrower == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+                
+              <hr />
+            </div>
+
+
+             <div class="center_content"> 
+
+              <%= label_tag "Lender would like a third-party present during transfer to borrower?:"  %>
+
+                    <% if lender_transfer.thirdPartyPresence == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.thirdPartyPresence == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+
+
+            </div>
+
+            <div id="thirdPartyPresenceL2BGroup" class="center_content">
+              <%= label_tag "Lender's Choice of third-party?:" %>
+                
+                    <% if lender_transfer.thirdPartyPresenceLenderChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.thirdPartyPresenceLenderChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                
+              <%= label_tag "Borrower's Choice of third party?:" %>
+
+                    <% if lender_transfer.thirdPartyPresenceBorrowerChoice == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.thirdPartyPresenceBorrowerChoice == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+                 
+              <%= label_tag "Mutual Agreement of third-party?:" %>
+
+
+                    <% if lender_transfer.thirdPartyPresenceMutual == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.thirdPartyPresenceMutual == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+              <hr />
+            </div>
+
+        
+
+          <div id="form_borrower_to_lender" class="center_content" >
+
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+                <span value="How lender would like the borrower to return your item?" />
+              </div>
+            </div>
+
+
+            <div class="center_content">
+
+              <div id="borrowerReturnsToWhichAddressGroup" >    
+
+                <%= label_tag "Borrower returns to lender's:"  %>
+
+                    
+                      <% if lender_transfer.borrower_returns_to_which_address == 0 %>
+                        <% @cbe  = "No pick up at any address" %>
+                      <% elsif lender_transfer.borrower_returns_to_which_address == 1 %>
+                        <% @cbe  = "Either address is fine" %>
+                      <% elsif lender_transfer.borrower_returns_to_which_address == 3 %>
+                        <% @cbe  = "Address #2" %>
+                      <% elsif lender_transfer.borrower_returns_to_which_address == 2 %>
+                        <% @cbe  = "Address #1" %>
+                      <% else %>
+                        <% @cbe  = "##" %>
+                      <% end %>
+                    <span id="borrowerReturnsToWhichAddressString" class="RO_text" ><%= @cbe %></span>
+
+                
+              </div>
+
+              <div class="center_content">
+                 <%= label_tag "Lender will pick up at borrower's location?:"  %>
+
+                    <% if lender_transfer.willPickUpPreferredLocation == 0 %>
+                      <% @cbe =  "No" %>
+                    <% elsif lender_transfer.willPickUpPreferredLocation == 1 %>
+                      <% @cbe =  "Yes" %>
+                    <% else %>
+                      <% @cbe  = "##" %>
+                    <% end %>
+                     <span class="RO_text" ><%= @cbe %></span>
+              </div>
+            </div>
+          </div>
+          <div class="center_content">
+              <%= label_tag  "Additional transfer preferences" %>
+              <span><%= lender_transfer.comment %></span>
+          </div>
+        
+      </div>
+    

@@ -1,0 +1,110 @@
+<%= form_for :user, :url => {:controller=> 'users', :action=> "create", :id => 'community' }, :html=> {:class=>"login", :method=> "post"} do |f| %>
+
+   <div  class="center_content" >
+
+                <div style="margin:10px;" >
+                    <span style="font-size:20px;margin-left:5px;">Community Registration</span>
+                    <%= f.submit "Register", {:class => "right_div"} %>
+                    <%= f.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+                </div>
+
+                <div id="communityNameGroup" style="float:left;margin-left:35px;margin-top:5px;margin-bottom:2px;width:100%" >
+                  <p style="font-size: 18px;color:indigo;">
+                      In registering as a Borrowing and/or Lending Community, EchoMarket functionality will be 
+                      exclusively yours, the public will not be able to access your Community. 
+                      Here you will become the first designated Community Creator with privileges like 
+                      adding Community Members, planning Community Meetings, and, if you wish, 
+                      for a reasonable fee EchoMarket will customize the appearance, 
+                      navigation and/or features of your Community environment to your preferences...  </p>                 
+                  <p style="font-size: 16px;color:indigo;">All fields are required.</p>                 
+                         
+                </div>
+           
+
+                <br />
+            <table style="width:100%;margin-left: 50px" align="center" id="user_registration_table">
+
+            <tr style="margin:15px;">
+                <%= f.fields_for :community_member, @community do |mem| %>
+                <tr>
+                <td style="width:70%;padding-bottom: 15px;" colspan=2>
+                     <%= mem.label :community_name, "Your EchoMarket Community Name:" %>       
+                     <%= mem.text_field( :community_name, {size:24}) %> 
+                </td>
+                </tr>
+                <tr>
+                <td style="width:50%;padding-bottom: 15px;">
+                    <%= mem.label :first_name, "Your First Name:"  %>
+                    <%= mem.text_field( :first_name, {size:16, maxlength:24}) %>
+                </td>
+                
+                <td style="width:50%;padding-bottom: 15px;">
+                    <%= mem.label :last_name, "Your Last Name: " %>
+                    <%= mem.text_field( :last_name, {size:16, maxlength:24}) %>
+                </td>
+                </tr>
+                <% end %>
+            <tr >
+                <td style="width:50%;padding-bottom: 15px;">
+                    <%= f.label :username, "Community User Name: " %>
+                    <%= f.text_field( :username, {size:16, maxlength:16}) %>
+                     <br />
+                     <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters</span> 
+                </td>
+                 
+                <td style="width:50%;  padding-bottom: 15px;">
+                    <%= f.label :user_alias, "Community User Alias: " %>
+                    <%= f.text_field( :user_alias, {size:16, maxlength:16}) %>
+                        <br />
+                     <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters</span> 
+                </td>
+            </tr>
+            <tr >
+                <td style="width:50%;padding-bottom: 15px;">
+                    <%= f.label :password, "Community Password: " %>
+                    <%= f.password_field( :password, {size:16, maxlength:16}) %>
+                </td>
+                <td style="width:50%;padding-bottom: 15px;">
+                    <%= f.label :password_confirmation, "Please re-enter that password: " %>       
+                    <%= f.password_field( :password_confirmation, {size:16, maxlength:16}) %>
+                </td>
+                </tr>
+                <tr >
+                   <td colspan="2" style="width:100%;padding-bottom: 15px;">
+                   <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters, at least one upper case letter, one lower case letter, one number, and one from @, #, $, %, or ! </span>      
+                   </td>
+                </tr>
+            </tr>
+            <tr  >
+                <td colspan="2" style="width:100%;padding-bottom: 15px;">
+                    <%= f.label :email, "Community Email: "  %>
+                    <%= f.text_field( :email, {size:24, maxlength:50}) %>
+                    </td>
+            </tr >
+           <tr >
+            <td colspan="2" style="width:100%;padding-bottom: 15px;">
+              <span class="required_fields" style="float:left;color:#0B5345;" >Please provide would how your Community like to Participate...</span>
+		      </br >
+			<div style="float:left;" >
+				<%= f.label "As Lenders:" %>
+				<% @include_lender = false %>
+				<% if @user %>
+				<% @include_lender = (@user.user_type ? @user.user_type.include?("lend"): false) %>
+				<% end %>
+				<%= f.check_box(:user_type,{ :multiple => true, :checked => @include_lender }, "lend", nil) %>
+			</div>
+			<div style="float:left;" >
+			    <%= f.label "As Borrowers:" %>
+				<% @include_borrower = false %>
+				<% if @user %>
+			    <% @include_borrower = (@user.user_type ? @user.user_type.include?("borrow"): false) %>
+				<% end %>
+			    <%= f.check_box(:user_type, { :multiple => true, :checked => @include_borrower }, "borrow", nil) %>
+			</div>		
+        </td>
+		</tr>
+        </table>
+         </div>
+    <% end %>
+
+

@@ -1,0 +1,90 @@
+<%= form_for :user, :url => {:controller=> 'users', :action=> "create", :id => 'individual' }, :html=> {:class=>"login", :method=> "post"} do |f| %>
+  <div class="center_content">
+  <% if @user %>
+  <% if @user.errors.any? %>
+    <div >
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <% end %>
+  
+  <%= f.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+  <%= f.hidden_field :role_id,{ :value => 0} %>
+  
+  <table style="width:95%;margin-left: 50px" align="center" id="user_registration_table">
+      <tr >
+	   
+  <td style="padding-bottom: 15px;"> 
+		<%= f.label :username %>
+		<%= f.text_field :username %>
+          <br />
+          <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters</span> 
+        </td>
+        <td style=" padding-bottom: 15px;">
+		<%= f.label :user_alias %>
+		<%= f.text_field :user_alias %>
+          <br />
+          <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters</span> 
+        </td>
+      </tr>
+      <tr >
+        <td style="padding-bottom: 0px;">
+      <%= f.label :password %>
+		  <%= f.password_field :password %>
+        </td>
+        <td style="padding-bottom: 0px;">
+		  <%= f.label :password_confirmation %>
+		  <%= f.password_field :password_confirmation %>
+        </td>
+      </tr>
+      <tr >
+        <td colspan="2" style="width:100%;padding-bottom: 15px;">
+          <span class="required_fields" style="margin-left:7px;color:maroon;" >8-16 characters, at least one upper case letter, one lower case letter, one number, and one from @, #, $, %, or ! </span>      
+        </td>
+      </tr>
+      <tr  >
+        <td colspan="2" style="width:100%;padding-bottom: 15px;">
+        <%= f.label :email %>
+		    <%= f.text_field :email %>
+        </td>
+      </tr >
+      <tr >
+        <td colspan="2" style="width:100%;padding-bottom: 15px;">
+          <span class="required_fields" style="float:left;color:#0B5345;" >Please provide how you would like to Participate...</span>
+		  </br >
+			<div style="float:left;" >
+				<%= f.label "As a Lender:" %>
+				<% @include_lender = false %>
+				<% if @user %>
+				<% @include_lender = (@user.user_type ? @user.user_type.include?("lend"): false) %>
+				<% end %>
+				<%= f.check_box(:user_type,{ :multiple => true, :checked => @include_lender }, "lend", nil) %>
+			</div>
+			<div style="float:left;" >
+			    <%= f.label "As a Borrower:" %>
+				<% @include_borrower = false %>
+				<% if @user %>
+			    <% @include_borrower = (@user.user_type ? @user.user_type.include?("borrow"): false) %>
+				<% end %>
+			    <%= f.check_box(:user_type, { :multiple => true, :checked => @include_borrower }, "borrow", nil) %>
+			</div>		
+        </td>
+		</tr>
+		 <tr >
+		 <td colspan="2" style="width:100%;padding-bottom: 15px;">
+		   <%= f.submit "Register" %>
+		</td>
+      </tr>
+    </table>
+	</div>
+	
+<% end %>
+ 
+
+
+

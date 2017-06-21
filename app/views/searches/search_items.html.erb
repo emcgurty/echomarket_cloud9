@@ -1,0 +1,178 @@
+ <%= javascript_include_tag 'item_search.js', :type => "text/javascript"  %>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<%= form_for :search, 
+  :url=> {:controller=>"searches", :action=> "create"}, :html=> {:class=>"search",  :id=>"search", :enctype=>"multipart/form-data"} do |f| %>
+
+      <div class="center_content">
+      <div class="top" >
+        <div style="margin:10px;margin-top:25px;margin-right:15px;" >
+          <span>BORROWER OR LENDER ITEM SEARCH</span>
+          <%= f.submit "Fingers Crossed! Find Items!", {:class=>'right_div'} %>
+          <%= f.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+          <%  if getUserID  %>
+            <%= f.hidden_field :user_id, {:value => getUserID } %>
+            <%= f.hidden_field :is_community, {:value => 0 }  %>
+          <% else %>
+            <%= f.hidden_field :user_id %>
+            <%= f.hidden_field :is_community, {:value => 0 }  %>
+          <% end %>
+          
+        </div> 
+      </div> 
+      
+      <div class="top" >
+          <% if @search_history %>
+          <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+          <span>Your Search History</span>
+          <%= f.collection_select :id, Search.where("user_id = :iid", {iid: getUserID}), :id, :search_name, {}, {onchange: "chooseSearch(this);"}  %>
+          <%= f.hidden_field :selection_made, {:value => 'no' }  %>
+          </div> 
+          <% end %>
+          <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+          <%= f.label :search_name, "Save Your Search" %>
+          <%= f.text_field(:search_name, {size:16, maxlength:50}) %>
+          </div> 
+      </div> 
+
+      <div  style="float:left;margin-top:5px;margin-left:15px;background-color: azure; width:90%; padding: 10px;">
+
+        <%= f.label :lender_or_borrower, "SEARCH what have LENDERS have offered!" %>
+          <%= f.radio_button :lender_or_borrower , 1 %>
+        <%= f.label :lender_or_borrower, "SEARCH what have BORROWERS have sought!" %>  
+          <%= f.radio_button :lender_or_borrower, 2 %>
+
+      </div>
+
+
+      <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+
+        <%= f.label :keyword, "By Item Description or Model:" %>
+          <%= f.text_field( :keyword, {:class=>"search", :style=>"margin-left:10px;"}) %>
+        <br />
+        <span class="radius" >Use one singular noun or verb to describe an item, you can use a partial word.</span>
+      </div>
+
+      <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+
+          <%= f.label :category_id, "By Item category:" %>
+          <% if @search %>
+            <%= f.collection_select :category_id, Category.all, :id, :category_type %>
+          <% else %>
+            <%= f.collection_select :category_id, Category.all, :id, :category_type, {:selected => "-2"} %>
+          <% end %>
+
+      </div>
+
+      <div  style="float:left;margin-top:5px;margin-left:15px;background-color: azure; width:90%; padding: 10px;">
+        <label>By the Date the Item was Offered Range:</label>
+
+        <table class="personal">
+          <tr>
+            <th style="text-align:left;width:45%;">From Date</th>
+            <th style="text-align:left;width:45%;">... through Date</th>
+          </tr>
+          <tr>
+            <td>
+              <%= f.text_field :start_date %>
+          
+            </td>
+
+            <td>
+             <%= f.text_field :end_date %>
+          
+            </td>
+          </tr>
+          <tr>
+            <td><span class="error-message" id="start_date_error"></span></td>
+            <td><span class="error-message" id="end_date_error"></span></td>
+          </tr>
+        </table>
+      </div>
+
+      <div  class="location" style="float:left;">
+        <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+          <%= f.label :postal_code,  "By Postal Code Location:" %>
+            <%= f.text_field( :postal_code, {:class=>"search", :style=>"margin-left:10px;" }) %>
+            <span class="error-message" id="postalCode_location_error"></span>
+
+          <span class="radius" style="float:left;">You can search for vicinity postal code beginning with a certain pattern.  For example to find all items in the Boston, MA area, just search for '021' without the single quotes.</span>
+        </div>
+
+        <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
+          <%= f.label "Within Radius:"  %>
+            <br />
+            <span>Select number of miles from your entered postal code.</span>
+            <%= f.label :zip_code_radius, "1 Mile: " %><%= f.radio_button :zip_code_radius,  1 %>
+            <%= f.label :zip_code_radius, "5 Miles: " %><%= f.radio_button :zip_code_radius,  5 %>
+            <%= f.label :zip_code_radius, "10 Miles: " %><%= f.radio_button :zip_code_radius,  10 %>
+            <%= f.label :zip_code_radius, "25 Miles: " %><%= f.radio_button :zip_code_radius,  25 %>
+            <br />
+            <%= f.label :found_zip_codes, "Postal Codes found within radius:" %>
+            <%= f.text_field(:found_zip_codes, {:class=>"search", :style=>"margin-left:10px;" }) %>
+          <span class="error-message" id="postalCode_error"></span>
+        </div>
+
+      </div>
+
+      <div  style="float:left;margin-top:5px;width:100%;margin-left:15px;" >
+        <span class="error-message" id="echo_market_search_error"></span>
+      </div>
+     
+     <% if @items %>
+          <% @counter = 0 %>
+          <% @items.each do |item| %>
+          
+            <div style="margin-left:25px;margin-top:15px;float:left;display:block;" >
+              <table>
+
+              <tr>
+              <td><%= label_tag "Item Description:" %></td>
+              <td><span style="margin-left:10px;color:black;"><%= item.item_description %></span></td>
+              </tr>
+              <tr>
+              <td><%= label_tag "Item Model:" %></td>
+              <td><span style="margin-left:10px;color:black;" ><%= item.item_model %></span></td>
+              </tr>
+              <tr>
+              <td><%= label_tag "Date Created:" %></td>
+              <td><span style="margin-left:10px;color:black;" ><%= item.created_at %></span></td>
+              </tr>
+                
+              <% @imageLibrary = item.item_type + "/" + @item_image_array.at(@counter)[0].to_s %>
+              <tr>
+              <td><%= image_tag(@imageLibrary, :size => "100x100") %></td>
+              <td>
+                <% if  @item_image_array.at(@counter)[1] %>
+                <%= label_tag  "Image caption:" %>
+                  <span style="margin-left:10px;color:black;" ><%=  @item_image_array.at(@counter)[1].to_s %></span>
+                <% end %>                
+              </td>
+              </tr>
+                <% @counter = @counter + 1 %>
+              <tr>
+              <td colspan=2>  
+              <%= link_to item.item_description + " Details", {:controller => 'items', :action => 'search_results', :id => item.item_id } %>
+              </td>
+              </tr>
+              </table>
+            </div>
+          <% end %>
+
+      <% else %>
+          <% if @search %>
+          <div style="margin-left:25px;margin-top:15px;float:left;display:block;" >
+            <span style="margin-left:10px;color: maroon; font-weight: bold;">
+            Sorry, no Items were found matching your criteria.  Please try again.</span>
+          </div>
+          <% end %>
+      <% end %>  
+
+      </div>
+    <% end %>
+
+
+     
+

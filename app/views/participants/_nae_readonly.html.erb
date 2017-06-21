@@ -1,0 +1,300 @@
+    <%  @whichUserType = item.item_type %>
+	  <%  @rid = participant.is_creator %>  
+	  
+    <% if @rid == 0 %>
+	     <% @allow = 'public'  %>  
+		   <% @sub_title = "EchoMarket 'Participant Information'" %>
+    <% else %>  
+       <% @allow = 'Community'  %>  
+    <% end %>
+        
+  	<% if @rid == 1 %>
+        <% @sub_title = "EchoMarket 'Creator Detail'" %>
+  	<% elsif @rid == 2 %>
+        <% @sub_title = "EchoMarket 'Community Member Information'" %>
+  	<% else %>	 
+  	<% end %>
+  	
+	
+      <div id="form_NAE" class="center_content"  >
+
+       <div style="display:block;float:left;height:auto;margin-top:10px;">
+          
+            
+              <div style="margin-left: 5px;float:left;">
+                <div  class="div_p" >
+                  <div style="margin:5px;" >
+                     <% if @rid == 0 %>
+                        <span>Participant Information</span>
+                     <% elsif @rid > 1 %>
+                        <span>Your Community generally..</span>
+					           <% else %>  
+                    <% end %>
+                 </div>
+               </div> 
+			      </div>
+
+	    </div>
+
+
+      <div style="display:block;float:left;height:auto;width:100%;margin-top:5px;">
+          <div style="float:left;margin-left:25px">
+            <% if @rid < 1 %>
+                  <% @display_describe = "How participant describes him/herself:"  %>
+           <% else %>
+				          <% @display_describe = "How Community describes itself" %> 
+				   <% end %>	  
+ 					 
+ 					 <%= label_tag @display_describe %>
+           <span class="RO_text" ><%= @cd %></span>
+           </div>
+
+            <% if participant.other_describe_yourself %>
+            <div id="otherDescribeYourselfText"  style="margin-top:10px;margin-left:5px;display: none;float:left;">    
+				    <% @display_other = "Description:" %>
+            <%= label_tag  @display_other, :style=>"margin-left:25px"  %>
+            <span class="RO_text"><%= participant.other_describe_yourself %></span>
+            </div>
+	  			  </div>
+	  			  <% end %>
+		
+
+    <div style="display:block;float:left;height:auto;margin-top:10px;margin-right:50px;">
+    
+       
+		<% if participant %>
+		<% if participant.organization_name %>  
+    
+    <div id="yesNoOrganization" style="margin-left:5px;display: block;float:left;">  
+					<% if participant.display_organization == 1 %>
+					   <span class="RO_text"><%= participant.organization_name %></span>
+					<% end %>
+		</div>
+
+		</div>
+	  <% end %>
+    <% end %>
+	
+	     <% if participant %>
+		   <% if participant.display_name == 1 %>  
+		   <div style="margin-left: 5px;float:left;">
+            <div  class="div_p"  >
+              <div style="margin:5px;" >
+                <span>Participant Name...</span>
+              </div>
+            </div>
+
+           <div style="display:block;float:left;height:auto;margin-top:10px;">
+            <div style="margin-left: 25px;float:left">
+            <%= label_tag  "First Name:"  %>  
+            <span class="RO_text"><%= participant.first_name %></span >
+            </div>
+			
+            <div style="margin-left: 25px;float:left">
+            <%= label_tag  "Middle Initial:"   %>
+			      <span class="RO_text"><%= participant.mi %></span>
+				    </div>
+        
+            <div style="margin-left: 25px;float:left">
+            <%= label_tag  "Last Name:" %>
+            <span class="RO_text"><%= participant.last_name %></span >
+            </div>
+          <% end %>
+          <% end %>
+          </div>
+
+         <% unless participant.email_alternative.nil? %>
+          <div  class="div_p"  >
+            <div style="margin:5px;" >
+              <span >Email Access at <%= participant.email_alternative %></span>
+              
+            </div>
+          </div>
+		     <% end %>
+
+
+     
+          
+        
+              
+		
+			<% if participant.display_address == 1 %>
+			  <div style="display:block;float:left;height:auto;margin-top:10px;">
+            <div style="margin-left: 15px;float:left">
+			 	<div  class="div_p"  >
+            <div style="margin:5px;" >
+              <span>Address #1...</span>
+            </div>
+          </div>
+			<%  @pa = Address.primary_address.where(participant_id: participant.participant_id).first %>
+      
+			<%= fields_for :primary_address, @pa do |primary_address| %>
+
+                  <table >
+                    <tr>
+                      <td>
+                        <%= primary_address.label :address_line_1 %>
+                        <%= @pa[:address_line_1] %>
+                      </td>
+                      <td>
+                        <%= primary_address.label :address_line_2 %>
+                        <%= @pa.address_line_2 %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= primary_address.label :city %>
+                        <%= @pa.city %>
+                      </td>
+                      <td>
+                        <%= primary_address.label :us_state_id %>
+                        <%= @spr %>
+		            	      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= primary_address.label :province %>
+                        <%= @pa.province %>
+
+                      </td>
+                      <td>
+                        <%= primary_address.label :region %>
+                        <%= @pa.region %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= primary_address.label :postal_code %>
+                        <%= @pa.postal_code %>
+                      </td>
+                      <td >
+
+                        <%= primary_address.label :country_id %>
+                        <%= @cpr %>
+                       
+
+                      </td>
+                    </tr>
+
+                  </table>
+             <% end %>	
+                         </div>
+          </div>    
+
+             <% end %>	
+
+
+          <% if participant.display_alternative_address == 1 %>
+          <% @display_alt_address = 'display' %>
+          <% else %>
+          <% @display_alt_address = 'none' %>
+          <% end %>
+
+          <div id="addressAlternative"  style="display:<%= @display_alt_address %>;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="margin-left: 15px;float:left;">
+                  <div  class="div_p"  >
+                  <div style="margin:5px;" >
+					        <span  >Address #2...</span>
+					         </div>
+                  </div>
+			
+ 	      <%  @aa = Address.alternative_address.where(participant_id: participant.participant_id).first %>
+
+		   	<%= fields_for :alternative_address, @aa do |alternative_address| %>
+
+          <% if  @aa.postal_code %>
+          
+          <table>
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :address_line_1 %>
+                        <%= @aa.address_line_1 %>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :address_line_2 %>
+                        <%= @aa.address_line_2 %>
+                      </td>
+                    </tr> 
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :city %>
+                        <%= @aa.city %>
+                      </td>
+                      <td>
+                        <%= alternative_address.label :us_state_id %>
+          		         <%= @salt %>
+
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <%= alternative_address.label :province %>
+                        <%= @aa.province %>
+
+                      </td>
+                      <td>
+                        <%= alternative_address.label :region %>
+                        <%= @aa.region %>
+
+                      </td>
+                    </tr>
+                    <tr >
+                      <td >
+                        <%= alternative_address.label :postal_code %>
+                        <%= @aa.postal_code %>
+                      </td>
+                      <td >
+
+                        <%= alternative_address.label :country_id %>
+			                  <%=  @calt %>
+
+                      </td>
+                    </tr>
+
+                  </table>
+            
+          
+				 <% end %>
+				 <% end %>
+        </div>
+      </div>    
+
+          <% @displayHome = participant.display_home_phone %>
+          <% @displayCell= participant.display_cell_phone %>
+          <% @displayAlt = participant.display_alternative_phone %>
+          
+          <% if @displayHome == 1 || @displayCell == 1 || @displayAlt == 1 %>
+          <div  class="div_p"  >
+            <div style="margin:10px;" >
+              <span>Your Phone Access...</span>
+            </div>
+          </div>
+
+          <% if @displayHome == 1 %>
+          <div style="display:block;float:left;height:auto;width:inherit;margin-left:10px;">
+            <%= label_tag "Phone #1" %>
+            <span class="RO_text" ><%= participant.home_phone %></span>
+          </div>  
+					<% end %>
+					
+					<% if @displayCell == 1 %>
+          <div style="display:block;float:left;height:auto;width:inherit;margin-left:10px;">
+            <%= label_tag "Phone #2" %>
+            <span class="RO_text" ><%= participant.cell_phone %></span>
+          </div>  
+					<% end %>
+          
+          <% if @displayCell == 1 %>
+          <div style="display:block;float:left;height:auto;width:inherit;margin-left:10px;">
+            <%= label_tag "Phone #3" %>
+            <span class="RO_text" ><%= participant.alternative_phone %></span>
+          </div>  
+					<% end %>
+					<% end %>
+
+       </div>
+       
+       </div>
+  

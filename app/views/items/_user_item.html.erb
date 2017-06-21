@@ -1,0 +1,321 @@
+<script type="text/javascript">
+
+        $('select').on('change', function() {
+        var foundItemChangedHidden = $("input[type=hidden][id*='item_changed']");   
+       foundItemChangedHidden.val(1);
+
+})
+</script>
+
+<%= main.fields_for :item, @item do  |f| %>
+
+      <%  @editable = editable %>
+            <% if @item %>
+              <% if @item.item_type %>
+                <% @itype = @item.item_type %>
+              <% end %>  
+            <% else %>  
+              <% @itype = getUserType%>
+            <% end %>  
+            
+            
+      
+      <% if @item %>
+      <% if @item.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
+          <ul>
+        <% @item.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+     <% end %>
+    <% end %>
+      
+      <body>
+        <%= f.hidden_field :item_changed, :value => 0 %>
+        <%= f.hidden_field :item_type, :value=> @itype   %>
+        <% if @item %>
+        <%= f.hidden_field :name_prefix, :value=> @item.item_id   %>
+        <% end %>
+        <%= f.hidden_field :remote_ip, :value=> request.remote_ip   %>
+        <%= f.hidden_field :item_id  %>
+              <% unless getParticipantID.nil? %>
+                <%= f.hidden_field :participant_id, :value=> getParticipantID %>
+              <% else %>
+                <%= f.hidden_field :participant_id %>
+              <% end %>
+
+        <div id="form_item" class="center_content" >
+          <div class="top" >
+            <div style="margin-top:10px;" >
+                
+                <% if @item %>
+                <% if @item.item_id %>
+                <% @label ="CURRENT " %>
+                <% else %>
+                <% @label ="NEW " %>
+                <% end %>
+                <% end %>
+                
+
+              <% if @editable == 1 %>              
+              <span style="font-size: large;color:indigo;" ><%= @label +  "ITEM: " %></span>
+              
+              <% end %>
+              
+              <% if @editable == 0 %>              
+              <span style="font-size: large;color:indigo;" ><%= "ITEM:" +  @item.item_description %></span>
+              <span style="font-size: large;color:indigo;" >The item you would like to <%= @itype %></span>
+              <% end %>
+              
+         
+              
+            <% if @editable == 0 %>              
+             <%= link_to "Edit Item",  {:controller => 'items', :action => 'show', :id => @item.item_id }, {:crud => 'edit'} %>
+            <% end %>  
+            
+            <% if @editable == 1 %>              
+             <input type="button" onclick="validateItem();" value="Validate Item" class="right_div" />
+            <% end %>  
+            </div> 
+          </div>
+
+          <div  class="div_p" >
+            <div style="margin:10px;" >
+              <% if @editable == 1 %>
+            
+              <% if @itype == 'both'  %>
+                 
+              
+                 <span style="font-size: large;color:indigo;" >The Item you would like to... Please select: </span>
+                  <select name="item[item_type]" id="item_item_type">
+                    <option value="borrow">Borrow</option>
+                    <option value="lend">Lend</option>
+                </select>
+                
+              <% end %>
+              <% end %>
+              
+            </div>
+          </div>
+
+          <div  class="div_p"  >
+            <div style="margin:10px;" >
+              <span>Item Detail... </span>
+              <span class="RO_text" >* -- Required field</span>
+              
+            
+            </div>
+          </div>
+
+          <table >
+            <tr class="odd">
+              <td style="width:50%;">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%= f.label :category_id,  "Category:" %>
+                 
+                 <span class="required_fields">*</span>                  
+                    <% if @editable == 1 %> 
+                    <% if  @item  %>
+                      <%= f.collection_select :category_id, Category.all, :id, :category_type, {}, {:class => "items select"} %>
+                    <% else %>
+                      <%= f.collection_select :category_id, Category.all, :id, :category_type, {:selected => "-2"},  { :class => "items select"} %>
+                    <% end %>
+                  <% else %>  
+                    <span id='categoryIdString'><%= getCategoryName(@item.category_id) %></span>
+                  <% end %>
+                  <br /><span class="error-message" id="category_id" ></span>
+                </div>
+              </td>
+              <td style="width:50%;">
+
+                <div id="other_category" style="display:none;">    
+                 <%= f.label :other_item_category, "Add another category:" %>
+                 <span class="required_fields">*</span>
+                    <% if @editable == 1 %> 
+                    <%= f.text_field( :other_item_category, {:class=>"items", :style=>"margin-left:10px", maxlength:24 }) %>
+                    <% else %>
+                    <span id="otherItemCategoryString"><%= @item.other_item_category %></span>
+                    <% end %>
+
+                  <span class="error-message" id="other_item_category" ></span>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="odd">
+              <td style="width:50%">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%= f.label :item_description, "Item Description:" %>
+                 <span class="required_fields">*</span>
+                   <% if @editable == 1 %>
+                    <%= f.text_field(:item_description, {:class=>"items", :style=>"margin-left:10px", maxlength:50 }) %>   
+                  <% else %>                
+                    <span class="RO_text"><%= @item.item_description %><span>
+                  <% end %>  
+                   <span class="error-message" id="item_description" ></span>
+                </div>
+                </td>
+              <td style="width:50%">
+                <div style="margin-left:25px;margin-top:5px;">
+                  <%= f.label :item_condition_id, "Item Condition: "  %>
+                  <span class="required_fields">*</span>
+                      <% if @editable == 1 %>
+                        <% if  @item.item_condition_id.nil? %>
+                        <%= f.collection_select :item_condition_id, ItemCondition.all, :id, :condition, {:selected => "-2"},  { :class => "items select"} %>
+                        <% else %>
+                        <%= f.collection_select :item_condition_id, ItemCondition.all, :id, :condition, {},  { :class => "items select"} %>                        
+                        <% end %>
+                        
+                      <%  else %>
+                        <span  class="RO_text" ><%= getItemConditionName(@item.item_condition_id) %></span>
+                      <% end %>
+                  <br /> <span class="error-message" id="item_condition_id" ></span>
+                </div>
+                </td>
+            </tr>
+
+            <tr class="even">
+              <td  style="width:50%;">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%= f.label :item_model, "Item Model:" %>
+                 <% if @editable == 1 %>
+                    <%= f.text_field( :item_model, {:style=>"margin-left:10px", maxlength:24 }) %>
+            <% end %>
+            <% if @editable == 0 %>
+                    <span class="RO_text"><%= @item.item_model %></span>
+            <% end %>
+                </div>
+                </td>
+              <td  style="width:50%;">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%= f.label :item_count, "Number Of Items:" %>
+                 <span class="required_fields">*</span>
+                    <% if @editable == 1 %>
+                      <span class="required_field_text">Between a count of 1 and 25</span>
+                      <%= f.text_field(:item_count, { size:2, maxlength:2, :class=>"items", :style=>"margin-left:10px" })  %>
+                    <% end %>
+
+                  <% if @editable == 0 %>
+                    <span id="itemCountString"  class="RO_text" ><%= @item.item_count %></span>
+                  <% end %>
+                  <span class="error-message" id="item_count" ></span>
+                </div>
+              </td>
+            </tr>
+            <tr class="odd">
+              <td >
+                <div style="margin-left:25px;margin-top:5px;">
+                    <%= f.label "Shout your EchoMarket item?"  %>
+                    <% if @editable == 1 %>
+                
+                    <%= f.label :notify, "Yes" %><%= f.radio_button :notify, 1 %>                   
+                    <%= f.label :notify, "No" %><%= f.radio_button :notify, 0 %>                   
+                      <% else %>
+                      
+                          <% if @item.notify == 0  %>
+                            <% @cbe ="No" %>
+                          <% elsif @item.notify == 1 %>
+                            <% @cbe ="Yes" %>
+                          <% else %>
+                            <% @cbe = "Selection not made" %>
+                        <% end %>
+                        <span id="notifyString" class="RO_text" ><%= @cbe %></span>
+                      <% end %>  
+
+                </div>
+                </td>
+              <td >
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%= f.label :comment, "Further item details information:" %>
+                 
+                   <% if @editable == 1 %>
+                    <%= f.text_area(:comment, {:class=>"items", :style=>"margin-left:10px", row:50, cols:10 }) %>   
+                  <% else %>                
+                    <span class="RO_text"><%= @item.comment %><span>
+                  <% end %>  
+                   <span class="error-message" id="itemDescription" ></span>
+                </div>
+                </td>
+            </tr>
+          </table>
+  
+          <div style="margin-top:5px;float:left;">
+              <%  if @item %>
+                <% sleep 1.5 %>
+            		<%  @ii = ItemImage.where(item_id: @item.item_id).first %>
+            		<% @imageLibrary = @item.item_type %>
+            		<%= @imageLibrary %>
+            	<% else %>	
+            	  <% sleep 1.5 %>
+		            <%  @ii = ItemImage.new  %>
+		            <% @imageLibrary = @itype  %>
+		        <% end %>    
+		        
+		        
+            <%= f.fields_for :item_images, @ii do |item_image|  %>
+            
+             <% if @editable == 1 %>
+                <%= item_image.hidden_field :item_image_id %>
+                <%= item_image.hidden_field :item_id %>
+                <%= item_image.hidden_field :item_type, :value=> @itype   %>
+                <div style="margin-left:25px;margin-top:5px;float:left;">
+                  <%= item_image.label :uploaded_picture, "Image of Item" %>    
+                  <%= item_image.file_field :uploaded_picture %>
+                  <% if @ii %>
+                   <% if @ii.image_file_name %>
+                    <% @imageLibrary = @imageLibrary + "/" + @ii.image_file_name %>
+                  <% end %>
+                <% end %>
+                  <br />
+                
+                </div>    
+                <br />
+                <div style="margin-left:5px;margin-top:5px;float:left;display:block;" id="image_details">
+
+                 <%= item_image.label  "Uploaded Image:"  %>
+                  <%= image_tag(@imageLibrary, :size => "100x100", :alt=>"Selected Image", :id=>'imagePreview', :class => "items picture" ) %>
+                  <br /><span class="error-message" id="imagePreview" ></span>
+                
+                </div>
+                <br />
+                <div style="margin-left:25px;margin-top:15px;float:left;display:block;" >
+                <%= item_image.label :item_image_caption, "If you'd like, provide a caption for your item image:" %>
+                    <%= item_image.text_field(:item_image_caption, {size:50, maxlength:50,  :style=>"margin-left:10px"}) %>
+                    <br />
+                 <input type="button" onclick="removeImage()" alt="Click to remove selected image.."  value="Remove Image" ></input>  
+                <br />
+                 
+                </div>
+          
+          
+            
+            <% else %>
+
+                <div style="margin-left:5px;margin-top:5px;float:left;display:block;" id="image_details">
+                 <%= item_image.label "Uploaded Image:"  %>
+                 <% if @ii %>
+                 <% if @ii.image_file_name %>
+                    <% @imageLibrary = @imageLibrary + "/" + @ii.image_file_name %>
+                    <%= image_tag(@imageLibrary, :size => "100x100") %>
+                <% end %>
+                <% end %>
+                </div>
+                <br />
+                <div style="margin-left:5px;margin-top:15px;float:left;display:block;" >
+                 <%= item_image.label :item_image_caption, "Provided caption for your item image:" %>
+                  <% if @ii %>
+                 <span id="itemImageCaption" class="RO_text" ><%= @ii.item_image_caption %></span>
+                  <% end %>
+                </div>
+              <% end %>
+            <% end %>
+
+          </div>
+
+        </div>
+      </body>
+    <% end %>
+  

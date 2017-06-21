@@ -1,0 +1,22 @@
+<%= form_for(lender_item_condition) do |f| %>
+  <% if lender_item_condition.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(lender_item_condition.errors.count, "error") %> prohibited this lender_item_condition from being saved:</h2>
+
+      <ul>
+      <% lender_item_condition.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :lender_item_condition_id %>
+    <%= f.text_field :lender_item_condition_id %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

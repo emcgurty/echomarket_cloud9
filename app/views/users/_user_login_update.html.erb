@@ -1,0 +1,172 @@
+ <%= main.fields_for :user, @user do |user_field| %>
+
+       <% rid = getRoleID %>  
+     
+        <div class="center_content" >
+        <div class="top" >
+          <div style="margin:10px;margin-top:25px;" >
+
+          </div> 
+          <div style="margin:10px;" >
+            <span>Login Information...</span>
+            <%= user_field.hidden_field :role_id, {:value=> getRoleID } %>                  
+          </div>
+        </div> 
+        
+          <% if @user %>
+          <% if @user.errors.any? %>
+            <br />
+            <div >
+              <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+              <ul>
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+              </ul>
+            </div>
+            <br />
+          <% end %>
+          <% end %>
+
+        <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+          <div style="margin-left: 25px;float:left">
+            <%= user_field.hidden_field :user_changed, :value => 0 %>
+            <%= user_field.hidden_field :user_id  %>
+            <table style="width:100%;margin-left: 50px" align="center" id="user_registration_table">
+              <td>
+                <%= user_field.label :delete_user, "Do you wish to delete your EchoMarket account?" %>
+                <%= user_field.check_box(:delete_user) %>
+                </td>
+
+
+
+              <% if getCommunityID  %>
+                <tr >
+                  <td style="width:50%;padding-bottom: 15px;colspan=2;">
+                    <%= user_field.label :community_name %>
+                    <% if editable == 1 %>
+                      <%= user_field.text_field(:community_name, {size:16, maxlength:50, :style=>"margin-left:5px"}) %>
+                    <% end %>    
+                    <% if editable == 0 %>
+                    <span style="margin-left:5px"><%= getCommunityName %></span> 
+                    <% end %>
+                  </td>
+
+                </tr>
+              <% end %>
+              
+              <tr >
+                <td style="width:50%;padding-bottom: 15px;">
+                  <%= user_field.label :username %>
+		              <% if editable == 1 %>
+		              <%= user_field.text_field :username %>
+		              <% end %>
+      
+                  <% if editable == 1 %>
+                  <span style="margin-left:5px"><%= getUserAlias %></span>
+                  <% end %>    
+
+                </td>
+                <td style="width:50%;  padding-bottom: 15px;">
+
+                  <%= user_field.label :user_alias %>
+		              <% if editable == 1 %>
+		              <%= user_field.text_field :user_alias %>
+		              <% end %>
+      
+                  <% if editable == 1 %>
+                  <span style="margin-left:5px"><%= getUserAlias %></span>
+                  <% end %>
+                  
+                </td>
+                
+                
+                <tr>
+                <td>
+                <%= user_field.label :user_password_changed, "Do you wish to change your password?" %>
+                <%= user_field.check_box(:user_password_changed) %>
+                </td>
+                </tr>
+                </table>
+              <div id="change_password" style="display:none;">
+            <table style="width:100%;margin-left: 50px" align="center" id="user_registration_table">
+                <tr>
+                  <td style="padding-top: 7px;padding-bottom: 7px;" colspan="2">
+                    <span class="required_fields" style="margin-left:7px;color:maroon;" >Please make a note of your new password, and provide matching confirmation password.</span> 
+                  </td>
+                </tr>
+
+              <tr >
+                <td style="width:50%;padding-bottom: 15px;">
+                  <%= user_field.label :password %>
+                  <% if editable == 1 %>
+                  <%= user_field.password_field :password %>
+		              <% end %>
+		              
+		              <% if editable == 0 %>
+		              <span  style="margin-left:5px">********</span>
+                  <% end %>
+
+
+                </td>
+                <td style="width:50%;padding-bottom: 15px;">
+                  <%= user_field.label :password_confirmation %>
+                  <% if editable == 1 %>
+                  <%= user_field.password_field :password_confirmation %>
+		              <% end %>
+		              
+		              <% if editable == 0 %>
+		              <span  style="margin-left:5px">********</span>
+                  <% end %>
+                </td>
+              </tr>
+              </table>
+              </div>
+            <table style="width:100%;margin-left: 50px" align="center" id="user_registration_table">
+              <tr  >
+                <td colspan="2" style="width:100%;padding-bottom: 15px;">
+                  <%= user_field.label :email %>
+                  <% if editable == 1 %>
+                  <%= user_field.text_field :email %>
+		              <% end %>
+		              
+		              <% if editable == 0 %>
+		              <span  style="margin-left:5px"><%= getEmail %></span>
+                  <% end %>
+
+                </td>
+              </tr >
+              
+              
+
+      <tr >
+      <td colspan="2" style="width:100%;padding-bottom: 15px;">
+          <span class="required_fields" style="float:left;color:#0B5345;" >Please provide how you would like to Participate...</span>
+          <span class="required_fields" style="float:left;color:maroon;" >If you choose to participant as a lender rather than as a borrower, those borrowing records will be lost, and vice-versa...</span>
+		  </br >
+			<div style="float:left;" >
+				<%= user_field.label "As a Lender:" %>
+				<% @include_lender = false %>
+				<% if @user %>
+				<% @include_lender = (@user.user_type ? @user.user_type.include?("lend"): false) %>
+				<% end %>
+				<%= user_field.check_box(:user_type,{ :multiple => true, :checked => @include_lender }, "lend", nil) %>
+			</div>
+			<div style="float:left;" >
+			    <%= user_field.label "As a Borrower:" %>
+				<% @include_borrower = false %>
+				<% if @user %>
+			    <% @include_borrower = (@user.user_type ? @user.user_type.include?("borrow"): false) %>
+				<% end %>
+			    <%= user_field.check_box(:user_type, { :multiple => true, :checked => @include_borrower }, "borrow", nil) %>
+			</div>		
+        </td>
+		</tr>
+
+            </table>
+          </div>
+        </div>
+        </div>
+      
+    <% end %>
+  

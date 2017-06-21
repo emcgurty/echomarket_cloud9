@@ -1,0 +1,337 @@
+<% if participant %>
+<% @participant = participant %>
+<% end %>
+
+<% if members %>
+<% @members = members %>
+<% end %>
+
+<%= form_for :participants,  
+:url=> {:controller=>"participants", :action => "update_members", :commit=>"members"},
+:html=> {:class=>"community_member",  :id=>"community_member_form"} do |f| %>
+<script >
+  function submitComMembers(cid, pid, action) {
+    var getPID = $("input[type=hidden][id*='participant_id']"); 
+    getPID.val(pid);
+    var getCID = $("input[type=hidden][id*='community_id']"); 
+    getCID.val(cid);
+    var getCID = $("input[type=hidden][id*='action']"); 
+    getCID.val(action);
+    return true;
+  }
+
+</script>
+
+  <style>
+  td {
+   text-align: center; }
+
+  th {
+   word-wrap: break-word; }
+
+  </style>
+
+  <body>
+
+      <div id="community_members" class="center_content" >
+        <div class="top" >
+          <div style="margin:10px;margin-top:25px;" >
+            <span ><%= getUserAlias %>: COMMUNITY DASHBOARD</span>
+            <br />
+            <span style="color:black;font-weight:bold;">Community Members</span>
+            <%= link_to "Return to User DashBoard", participants_main_user_detail_url, {:class => 'right_div'} %>
+          </div>   
+        </div>
+        <div style="float:left;margin:15px;margin-top:10px;" >
+          <span style="color:black;font-weight:bold;">View, Update, or Add Members...<span>
+
+          <% if num_rows == 0 %>
+            <br /><br />
+            <%= f.label :howManyRecords, "How many new members would you like to add?" %>
+            <span id="newRange" style="margin-left: 10px;margin-right:10px;font-size: small;" >Please enter a value between 1 and 25.</span>
+            <%= f.text_field(:howManyRecords, {:style=>"margin-left:5px;", maxlength:2, size:3}) %>
+            <%= f.submit 'Add Member(s)', {id: 'add_members'} %>
+            <span class="error-message" id="howManyRecords" ></span>
+            <br /><br />
+
+          <% else %>
+
+            <ul style="margin-left:5px;margin-bottom:5px;color:maroon;">
+              <li>All fields are required.</li>
+              <li>New members will receive email notification to complete the EchoMarket registration process.</li>
+              <li>Members with the same first name, last name and alias are considered duplicates. Distinguish folks with the same name by their aliases.</li>
+              <li>Incomplete rows will not be saved.</li>
+            </ul>
+          <% end %>
+        </div>
+
+        <% if @members %>
+        
+        <span style="color:black;font-weight:bold;margin-top:5px;margin-bottom:5px;">Designated Community Creators</span>
+
+        <table>
+        <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Alias</th>
+        <th>Email</th>
+        <th>Is Active</th>
+        </tr> 
+        
+        <% @members.each do |cr| %>
+        <% if cr.is_creator? %>
+        <tr>
+          <td>
+            <%= cr.first_name %>
+          </td>
+          <td>
+            <%= cr.last_name %>
+          </td>
+          <td>
+            <%= cr.alias %>
+          </td>
+          <td>
+            <% if cr.email_alternative.blank? %>
+            <%= User.find_by(user_id: cr.user_id).email %>
+            <% else %>
+             <%= cr.email_alternative  %>
+            <% end %>
+          </td>
+          <td>
+            <% if cr.is_active == 1 %>
+              <span style="color: green; font-weight: bold;" >Yes</span>
+            <% else %>
+              <span style="color: crimson; font-weight: bold; ">No</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      <% end %>
+      </table>
+      <% end %>
+
+
+
+        <% @row_index = 1 %>
+        
+        <% if @members %>
+        <br/>
+          <span style="color:black;font-weight:bold;margin-top:5px;">Community Members</span>
+
+          <table >
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Alias</th>
+            <th>Email</th>
+            <th>Is Active?</th>
+            <th>Is Creator?</th>
+            <th>Completed<br/> Registration?</th>
+            <th>Date Created</th>
+            <th>Action</th>
+          </tr>
+          
+          <%= f.fields_for :community_members do |mem| %>
+              <%= mem.hidden_field :participant_id %>
+              <%= mem.hidden_field :community_id, :value => getCommunityID  %>
+              <%= mem.hidden_field :action  %>       
+          <% @members.each do |mem_data|  %>
+
+          <tr>
+            <td>
+              <%= @row_index %>
+            </td>
+            
+           <%  if mem_data.editable == 1 %>
+            <td>
+              <%= mem.text_field(:first_name,  {:value => mem_data.first_name, size:16,  maxlength:24})  %>
+
+            </td>
+            <td>
+              <%= mem.text_field(:last_name, {:value => mem_data.last_name, size:16,  maxlength:24})  %>
+            </td>
+            <td>
+              <%= mem.text_field(:alias, {:value => mem_data.alias, size:8,  maxlength:16})  %>
+            </td>
+            <td>
+              <%= mem.text_field(:email_alternative, {:value => mem_data.email_alternative, size:16,  maxlength:50})  %>
+            </td>
+            
+            <td>
+              <% if mem_data.is_active == 1 %>
+              <% @yes_checked = true %>
+              <% @no_checked = false %>
+              <% else %>
+              <% @yes_checked = false %>
+              <% @no_checked = true %>
+              <% end %>
+
+              <%= mem.label :is_active,  "Yes"  %><%= mem.radio_button :is_active, 1, :checked => @yes_checked %>
+              <%= mem.label :is_active,  "No"  %><%= mem.radio_button  :is_active, 0, :checked => @no_checked  %>
+            </td>  
+            
+            <td>
+              <% if  mem_data.is_creator == 1 && mem_data.editable == 0 %>
+                <span style="color: green; font-weight: bold;" >Yes</span>
+              <% elsif  mem_data.is_creator == 0 && mem_data.editable == 0 %>
+                <span style="color: red; font-weight: bold;" >No</span>
+              <% end %>
+              <% if mem_data.editable == 1 %>
+              
+              <% if mem_data.is_creator == 1 %>
+              <% @yes_checked = true %>
+              <% @no_checked = false %>
+              <% else %>
+              <% @yes_checked = false %>
+              <% @no_checked = true %>
+              <% end %>
+              
+              <%= mem.label :is_creator,  "Yes"  %><%= mem.radio_button :is_creator, 1, :checked => @yes_checked %>
+              <%= mem.label :is_creator,  "No"  %><%= mem.radio_button  :is_creator, 0, :checked => @no_checked  %>
+              <% end %>
+            </td>
+            
+            
+            
+            <td>
+               <input type='submit' value="Update"  id="update" onclick="submitComMembers('<%=  mem_data.community_id %>','<%=  mem_data.participant_id %>', 'update');"  /> 
+               <span style="color: green; font-weight: lighter;">|</span>
+                <%= mem.hidden_field :community_id, :value => mem_data.community_id  %>       
+
+               <%= mem.submit "Cancel", {:name => 'cancel'}   %>
+            </td>
+
+            <% else %>
+            
+            <td>
+              <span style="color: #045491; font-weight: bold;" ><%= mem_data.first_name %></span>
+            </td>
+            <td>
+              <span style="color: #045491; font-weight: bold;" ><%= mem_data.last_name %></span>
+            </td>
+            <td>
+              <span style="color: #045491; font-weight: bold;" ><%= mem_data.alias %></span>              
+            </td>
+            <td>
+              <% if mem_data.email_alternative.blank? %>
+              <span style="color: maroon; font-weight: bold;" >None provided</span>
+              <% else %>
+              <span style="color: #045491; font-weight: bold;" ><%= mem_data.email_alternative %></span>
+              <% end %>
+            </td>
+            
+            <td>
+              <% if  mem_data.is_active == 1  %>
+                <span style="color: green; font-weight: bold;" >Yes</span>
+              <% elsif  mem_data.is_active == 0  %>
+                <span style="color: red; font-weight: bold;" >No</span>
+              <% end %>
+            </td>
+            
+            <td>
+              <% if  mem_data.is_creator == 1  %>
+                <span style="color: green; font-weight: bold;" >Yes</span>
+              <% elsif  mem_data.is_creator == 0  %>
+                <span style="color: red; font-weight: bold;" >No</span>
+              <% end %>
+            </td>
+            
+            <td>
+            <% if mem_data.goodwill == 1 && mem_data.age_18_or_more == 1   %>
+                <span style="color: green; font-weight: bold;" >Yes</span>
+            <% else  %>
+                <span style="color: red; font-weight: bold;" >No</span>
+            <% end %>
+            </td>
+  
+          <td >
+            <span style="color: green; font-weight: lighter;"><%= mem_data.created_at.strftime('%F:%I:%M') %></span>
+          </td>
+  
+          <td>
+          <input type='submit' value="Edit"  id="edit" onclick="submitComMembers('<%=  mem_data.community_id %>','<%=  mem_data.participant_id %>', 'edit');"  /> 
+          </td>
+        <% end %>
+        <% @row_index = @row_index + 1 %>
+         </tr>      
+         <% end %>
+         <% end %>
+        </table>
+           <% end %>
+
+        
+        <% if num_rows > 0 %>
+        
+        <% @row_index = 1 %>
+        
+         <span >New Community Members</span>
+         
+        <table>
+        <tr/>  
+        <th>#</th>  
+        <th>First Name</th>  
+        <th>Last Name</th>
+        <th>Alias</th>  
+        <th>Notification Email</th>  
+        <th>Is Active?</th>
+        <th>Creator Privilege?</th>
+        
+        </tr>
+        <% num_rows.times do  %>
+        <% @new_mem = Participant.new %>
+        <%= f.fields_for 'mem_array[]', @new_mem do |newm| %>
+              <% if @row_index == 1 %>
+              <tr>
+               <td>
+                
+                <%= newm.submit "Save New Member(s)" %> 
+              </td>
+              </tr>
+              <% end %>
+              <tr>
+               <td>
+                <%= @row_index %>
+                 <%= newm.hidden_field :current_row , :value => @row_index %> 
+
+               
+              </td>
+              
+              <td>
+              <%= newm.text_field(:first_name, {size:16,  maxlength:24})  %>
+              </td>
+              
+              <td>
+              <%= newm.text_field(:last_name, {size:16, maxlength:24}) %>
+              </td>
+              
+              <td>
+              <%= newm.text_field(:alias, {size:8, maxlength:16}) %>
+              </td>
+              
+              <td>
+              <%= newm.text_field(:email_alternative, {size:16, maxlength:50}) %>
+              <br />
+              <span class="error-message" id=<%= "email" + @row_index.to_s %></span>
+              </td>
+              
+              <td>
+              <%= newm.label :is_active, "Yes"  %><%= newm.radio_button :is_active, 1, {:name => "rbia".concat(@row_index.to_s) } %>
+              <%= newm.label :is_active, "No"  %><%= newm.radio_button :is_active,  0, {:name => "rbia".concat(@row_index.to_s) } %>
+              </td>
+
+            <td>
+              <%= newm.label :is_creator, "Yes"  %><%= newm.radio_button :is_creator, 1, {:name => "rbic".concat(@row_index.to_s) } %>
+              <%= newm.label :is_creator, "No"  %><%= newm.radio_button :is_creator, 0, {:name => "rbic".concat(@row_index.to_s) } %>
+              <% @row_index = @row_index +1 %> 
+            </td>
+            </tr>
+          
+        <% end %>
+        <% end %>
+        
+        </table>
+        <% end %>
+      </div>
+    </body>
+  <% end %>

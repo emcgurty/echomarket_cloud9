@@ -1,0 +1,6 @@
+   <%= form_for :participant, :url=> {:controller=>"participants", :action => "postUserAgreement" }, :html=> {:class=>"login",  :id=>"user_agreement"} do |f| %>
+   <%= f.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+   <%= f.hidden_field :user_id,{ :value => getUserID} %>
+   <%= f.hidden_field :role_id,{ :value => getRoleID} %>
+   <%= render :partial => 'participants/user_agreement_content' , :locals => {:f => f , :editable => -1}  %>
+   <% end %>

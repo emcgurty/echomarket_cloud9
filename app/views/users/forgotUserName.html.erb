@@ -1,0 +1,49 @@
+<%= form_for :user, :url=> {:controller=>"users", :action => "forgotUserName", :commit=>"forgotUserName"}, :html=> {:class=>"login",  :id=>"forgotUserName"} do |f| %>
+<% if defined? @user %>	
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %> 
+
+    <div  class="top" id="form_forgot_userpassword">
+      <table style="width:75%;margin-left: 50px" align="center" id="forgot_username_table">
+        <tr >
+          <td style="padding-top: 15px;padding-bottom: 15px;">
+            <p>Forgot User Name</p>
+          </td>
+        </tr> 
+        <tr>
+          <td style="padding-top: 15px;padding-bottom: 15px;">
+             <%= f.label :email %>
+			 <%= f.text_field :email %>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 15px;padding-bottom: 15px;">
+            <%= f.label :password %>
+			<%= f.password_field :password %>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 15px;padding-bottom: 5px;">
+             <%= f.submit "Get User Name" %>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top: 15px;padding-bottom: 15px;">
+            <%= link_to "Nevermind!", {}, {:onclick => "window.history.back();"} %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  <% end %>
+
+

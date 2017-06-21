@@ -1,0 +1,68 @@
+<%= stylesheet_link_tag 'item_nav' , media: 'all', 'data-turbolinks-track' => true %>
+<% whichType = item_type  %>
+
+  <div class="center_content">
+  <ul id="nav" class="item_menu" >
+
+        <% if whichType == 'borrow' %>
+          <li id="tab_item_1" >
+          <a href="#" onclick="displayNewItemDivs('new');">Item to Borrow</a>
+
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li id="tab_item_1" >
+          <a href="#" onclick="displayNewItemDivs('new');">Item to Lend</a>
+          </li>
+        <% end %>  
+
+    </li>
+
+      <% if display == 1 %>
+      <% if (whichType == 'borrow' )  %>
+        <li id="tab_item_1">
+          <a href="#" onclick="displayNewItemDivs('preference');">Contact Preferences</a>
+        </li>
+      <% elsif (whichType == 'lend' || whichType == 'both')  %>
+          <li id="tab_item_1">
+          <a href="#" onclick="displayNewItemDivs('preference');">Contact Preferences</a>
+          </li>
+        
+          <li id="subs">
+          <a href="#s1">Lending Transfer Preferences/Conditions</a>
+          <ul>
+            <li id="tab_item_12" >
+              <a href="#" onclick="displayNewItemDivs('transfer');">Transfer Preferences</a>
+            </li>
+            
+            <li id="tab_item_13" >
+              <a href="#" onclick="displayNewItemDivs('condition');">Lending Conditions</a>
+            </li>
+            
+          </ul>
+        </li>
+      <% end %>     
+      <% end %>     
+    <% if session[:complete] %>
+    <li >
+      <%= link_to "User DashBoard",  participant_url('main_user_detail') %>
+    </li>
+    <li >
+      <%= link_to "Create New Item",  {:controller => 'items', :action => 'new_item', :item_id => "" } %>
+    </li>
+    <% else %>
+    <% if display == 0 %>
+    <%= link_to 'Quit Item', {}, {:onclick=>"alert('To be developed');"} %>
+    <%  end %>
+
+    <% end %>
+          <div class="right_div" >
+           <% if editable == 1 %>              
+              <%= main.submit "Save!", {:commit => 'item',  :style => "font-size: large;color:indigo;" } %>
+           <% end %> 
+          </div>
+  </ul>
+  </div>
+  
+
+  
+  

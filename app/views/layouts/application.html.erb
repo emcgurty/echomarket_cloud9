@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EchoMarket</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'stylesheet' , media: 'all', 'data-turbolinks-track' => true %>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+     <%= javascript_include_tag 'borrower_seeking.js', :type => "text/javascript"  %>
+     
+  </head>
+
+  <body>
+  
+	 <%= render :partial => "layouts/application_menu" %>
+	 
+	 <%= render :partial => "layouts/echomarket_header" %>
+	 <div id="content" class="center_content" >
+ 	  <% if flash[:notice] %>
+		<div class="notice">EchoMarket Notification:
+		  <ul>
+		   <% flash.each do |key,value| %>
+        <li>
+          <%= value.to_s %>
+        </li>
+      <% end %>
+		  </ul>
+		
+		</div>
+	    <% end %>
+	 </div>
+  
+      <%= yield %>
+	
+	<%= render :partial => "layouts/echomarket_footer" %>
+	
+  </body>
+  	 
+</html>

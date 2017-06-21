@@ -1,0 +1,67 @@
+ <%= form_for :item, {:enctype=>"multipart/form-data"} do |f| %>
+
+ <% @item = item %>
+  <div class="center_content" >
+      <div class="top" style="margin-top:10px;"  >
+        <span>ITEMS SOUGHT</span>
+      </div> 
+      <br />
+     <% if @item %>
+     
+     <div style="margin-left:25px;margin-top:15px;position: relative;float:left;display:block;border-right:solid gray dashed ;" >
+     <% @item.each do |row| %>     
+     
+        <div style="margin-left:15px;margin-top:15px;display:block;border-right:solid gray dashed ;" >
+            <%= label_tag  "Item to: " %>
+            <span id="item_type style="margin-left:10px;color:black;text-transform: capitalize;">
+              <%= row.item_type %></span> 
+              <br />
+          
+            <%= label_tag "Item Description:" %>
+            <span id="item_description" style="margin-left:10px;color:black;"><%= row.item_description %></span> 
+            <br />
+          
+            <%= label_tag "Item Model:" %>
+            <span id="item_model" style="margin-left:10px;color:black;"><%= row.item_model %></span> 
+            <br />
+          
+             <%= label_tag "Item Approved?:" %>
+             <% if row.approved == 1 %>
+            <span style="margin-left:10px;color:black;">Yes</span>
+             <% elsif row.approved == 0 %>
+             <span style="margin-left:10px;color:black;">No</span>
+             <% end %>
+             <br />
+             
+             <%= label_tag "Date Created:" %>
+             <span style="margin-left:10px;color:black;"><%= row.created_at %></span>
+             <br />
+          
+              <% @currentImage = ItemImage.find_by(item_id: row.item_id)  %>
+              <% if @currentImage %>
+              <% unless @currentImage.image_file_name.nil? %>
+              <% @imageSource = row.item_type + "/" + @currentImage.image_file_name %>
+              <%= image_tag(@imageSource, :size => "100x100") %>
+              <% end %>
+              <% end %>
+              
+              <br />
+          
+          <%= link_to "Edit", {:controller => 'items', :action => 'new_item', 
+               :id => row.participant_id.to_s, 
+               :item_id => row.item_id.to_s} %>
+          <%= " | " %>
+          <%= link_to "Delete", row, method: :delete, confirm: "Are you sure you wish to delete this item?" %>
+       </div>
+       <br />
+      <% end %>
+     </div>
+      <% else %>
+        <div class="span_class" >
+        <span>No History Records Found</span>
+        </div>
+      <% end %>
+ </div>
+
+ <% end %>
+

@@ -1,0 +1,89 @@
+        <div id="form_item_readonly" class="center_content" >
+           <div class="div_p" >
+            <div style="margin-top:10px;" >
+            <span><%= "ITEM: " +  item.item_description %></span>
+            </div> 
+            </div>
+
+          <table >
+            <tr class="odd">
+              <td style="width:50%;colspan=2">
+                <div style="margin-left:25px;margin-top:5px;">
+                 
+                  <% if item.category_id %>
+                    <%=  label_tag  "Item Category:" %>
+                    <span id='categoryIdString'><%= Category.find_by(id:item.category_id).category_type %></span>
+                  <% else %>
+                    <%=  label_tag :other_item_category, "Item Category:" %>
+                    <span id="otherItemCategoryString"><%= item.other_item_category %></span>
+                 <% end %>
+                  <br />
+                </div>
+              </td>
+            </tr>
+
+            <tr class="even">
+              <td style="width:50%">
+                <div style="margin-left:25px;margin-top:5px;">
+                    <%=  label_tag  "Item Description: " %>
+                    <span class="RO_text"><%= item.item_description %></span>
+                </div>
+                </td>
+              <td style="width:50%">
+                <div style="margin-left:25px;margin-top:5px;">
+                  <%=  label_tag  "Item Condition: "  %>
+                  <span  class="RO_text" ><%= ItemCondition.find_by(id:item.item_condition_id).condition %></span>
+                </div>
+                </td>
+            </tr>
+
+            <tr class="even">
+              <td  style="width:50%;">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%=  label_tag  "Item Model:" %>
+                <span class="RO_text"><%= item.item_model %></span>
+                </div>
+                </td>
+              <td  style="width:50%;">
+                <div style="margin-left:25px;margin-top:5px;">
+                 <%=  label_tag  "Number Of Items:" %>
+                    <span id="itemCountString"  class="RO_text" ><%= item.item_count %></span>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <br />
+          <div style="margin-left:25px;margin-top:5px;float:left;">
+              <%  if @item %>
+            		<%  @ii = ItemImage.where(item_id: item.item_id).first %>
+            		<% @imageLibrary = item.item_type %>
+		          <% end %>    
+		        
+		        
+            <%= fields_for :item_images, @ii do |item_images|  %>
+            
+             
+                <div style="margin-left:5px;margin-top:5px;float:left;display:block;" id="image_details">
+                 <%= label_tag "Uploaded Image:"  %>
+                 <% if @ii %>
+                 <% if @ii.image_file_name %>
+                    <% @imageLibrary = @imageLibrary + "/" + @ii.image_file_name.to_s %>
+                    <%= image_tag(@imageLibrary, :size => "100x100") %>
+                <% end %>
+                <% end %>
+                </div>
+                <br />
+                <div style="margin-left:5px;margin-top:15px;float:left;display:block;" >
+                 <%= label_tag "Provided caption for your item image:" %>
+                  <% if @ii %>
+                 <span id="itemImageCaption" class="RO_text" ><%= @ii.item_image_caption %></span>
+                  <% end %>
+                </div>
+             
+            <% end %>
+
+          </div>
+
+        </div>
+  
+  

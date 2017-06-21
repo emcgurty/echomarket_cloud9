@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Lender Item Conditions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Lender item condition</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @lender_item_conditions.each do |lender_item_condition| %>
+      <tr>
+        <td><%= lender_item_condition.lender_item_condition_id %></td>
+        <td><%= link_to 'Show', lender_item_condition %></td>
+        <td><%= link_to 'Edit', edit_lender_item_condition_path(lender_item_condition) %></td>
+        <td><%= link_to 'Destroy', lender_item_condition, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Lender Item Condition', new_lender_item_condition_path %>

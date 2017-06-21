@@ -1,0 +1,504 @@
+<%= main.fields_for :lender_item_condition, @lender_item_condition do  |lic_fields| %>  
+
+      <% if editable %>
+      <% @editbale = editable %>
+      <% end %>
+
+        <%= lic_fields.hidden_field :condition_changed, :value => 0 %>
+        <div id="lender_registration" class="center_content" >
+          
+        <% @iid = session[:item_id] %>
+                
+          <% if @lender_item_condition %>
+            <% if @lender_item_condition.errors.any? %>
+            <div id="error_explanation">
+            <h2><%= pluralize(@lender_item_condition.errors.count, "error") %> prohibited this Lender Transfer detail from being saved:</h2>
+            <ul>
+            <% @lender_item_condition.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+            <% end %>
+            </ul>
+            </div>
+            <% end %>
+            <% end %>
+            
+            
+          <div id="form_monetary" class="center_content" style="width:100%;" >
+            <div class="top" >
+              <div style="margin:10px;margin-top:25px;" >
+            
+                
+                <%= lic_fields.hidden_field :lender_item_condition_id %>
+                
+                 <% if session[:item_id] %>
+                  <%= lic_fields.hidden_field :item_id, {:value => session[:item_id]} %>
+                 <% else %>
+                  <%= lic_fields.hidden_field :item_id %> 
+                 <% end %>
+                 
+                <%= lic_fields.hidden_field :remote_ip,{ :value => request.remote_ip} %>
+                <% if getParticipantID %>
+                <%= lic_fields.hidden_field :participant_id, { :value => getParticipantID} %>
+                <% else %>
+                <%= lic_fields.hidden_field :participant_id %>
+                <% end %>
+                <%= lic_fields.hidden_field :user_id, { :value => getUserID} %> 
+
+              </div> 
+              
+              <div  class="div_p"  >
+                <div style="margin:10px;" >
+                  <span>Lender Item Conditions</span>
+                </div>
+              </div>
+
+            </div>
+
+             
+              <% if @editable == 0 %>
+                <div  class="div_p"  >
+                  <div style="margin:10px;" >
+                    <span value="##" class="RO_text"/>
+                    <span value=" -- means 'Selection Not Made'"  />
+                  </div>
+                </div>
+              <% end %>
+
+
+            <div style="margin-left:15px;margin-top:5px;width:100%;">
+              <%= lic_fields.label "Item Offered For Free?"  %>
+                
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :for_free, "Yes"  %> <%= lic_fields.radio_button :for_free, 1 %>
+                  <%= lic_fields.label :for_free, "No"  %>  <%= lic_fields.radio_button :for_free, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.for_free == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.for_free == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="for_free_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+              
+            </div>
+            <div style="width:100%;">
+              <hr />
+              <table class="personal" >
+                <tr>
+                  <td>  
+                    <%= lic_fields.label "Item has a small borrowing fee?:"  %>
+                    <% if @editable == 1 %>
+                        <%= lic_fields.label :small_fee, "Yes" %> <%= lic_fields.radio_button :small_fee, 1 %>
+                        <%= lic_fields.label :small_fee, "No" %>  <%= lic_fields.radio_button :small_fee, 0 %>
+                    <% end %>
+                    
+                    <% if @editable == 0 %>
+                        
+                          <% if @lender_item_condition.small_fee == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.small_fee == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="small_fee_String"  class="RO_text" ><%= @cbe %></span>
+                    <% end %>  
+                    
+                  </td>
+                  <td>
+                    <%= lic_fields.label :small_fee_amount, "If yes, what fee amount?" %>
+                    <% if @editable == 1 %>
+                      <%= lic_fields.text_field( :small_fee_amount, {size:10, maxlength:10 }) %>
+                      <span class="error-message" id="smallFee" ></span>       
+                    <% end %>
+                    
+                    <% if @editable == 0 %>
+                      <span id="small_fee_amount_String", class="RO_text" ><%= @lender_item_condition.small_fee_amount %></span>
+                    <% end %>  
+                    
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+
+            <div style="margin-top:5px;margin-left:25px;">
+              <hr />
+              <table class="personal" >
+                <tr>
+                  <td>  
+
+                    <%= lic_fields.label "Item may be available for small purchase amount?:"  %>
+                    <% if @editable == 1 %>
+                        <%= lic_fields.label :available_for_purchase, "Yes" %> <%= lic_fields.radio_button :available_for_purchase, 1 %>
+                        <%= lic_fields.label :available_for_purchase, "No" %>  <%= lic_fields.radio_button :available_for_purchase, 0 %>
+                    <% end %>
+                    
+                      <% if @editable == 0 %>
+                        
+                          <% if @lender_item_condition.available_for_purchase == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.available_for_purchase == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="available_for_purchase_String"  class="RO_text" ><%= @cbe %></span>
+                      <% end %> 
+                    
+
+                  </td>
+                  <td>
+                    <%= lic_fields.label :available_for_purchase_amount, "If yes, what purchase amount?:" %>
+                      <% if @editable == 1 %>
+                      <%= lic_fields.text_field(:available_for_purchase_amount, {size:10, maxlength:10}) %>
+                      <% end %> 
+                      
+                      <% if @editable == 0 %>
+                        <span id="available_for_purchase_amount_String" class="RO_text" ><%= @lender_item_condition.available_for_purchase_amount %></span>
+                      <% end %> 
+                    
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>  
+
+                    <%= lic_fields.label "Item may be available for donation?:"  %>
+
+                      <% if @editable == 1 %>
+                        <%= lic_fields.label :available_for_donation, "Yes" %>      <%= lic_fields.radio_button :available_for_donation, 1 %>
+                        <%= lic_fields.label :available_for_donation, "No" %>       <%= lic_fields.radio_button :available_for_donation, 0 %>
+                      <% end %> 
+                      
+                      <% if @editable == 0 %>
+                      
+                          <% if @lender_item_condition.available_for_donation == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.available_for_donation == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="available_for_donation_String"  class="RO_text" ><%= @cbe %></span>
+                      <% end %> 
+
+                    
+                  </td>
+                  <td>
+
+                    <%= lic_fields.label "If yes, would you like to anonymously donate?:"  %>
+                      <% if @editable == 1 %>
+                        <%= lic_fields.label :donate_anonymous, "Yes" %>      <%= lic_fields.radio_button :donate_anonymous, 1 %>
+                        <%= lic_fields.label :donate_anonymous, "No" %>       <%= lic_fields.radio_button :donate_anonymous, 0 %>
+                      <% end %> 
+
+                      <% if @editable == 0 %>
+                      
+                          <% if @lender_item_condition.donate_anonymous == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.donate_anonymous == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        
+                        <span id="donate_anonymous_String"  class="RO_text" ><%= @cbe %></span>
+                      <% end %> 
+                    
+                  </td>
+                </tr>
+                <tr>
+                  <td>  
+
+                    <%= lic_fields.label "Would you be interesting in trading?:"  %>
+                      <% if @editable == 1 %>
+                        <%= lic_fields.label :trade, "Yes" %><%= lic_fields.radio_button :trade, 1 %>
+                        <%= lic_fields.label :trade, "No" %><%= lic_fields.radio_button :trade, 0 %>
+                      <% end %> 
+
+                      <% if @editable == 0 %>
+                          <% if @lender_item_condition.trade == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.trade == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        <span id="trade_String"  class="RO_text" ><%= @cbe %></span>
+                      <% end %> 
+                    
+                  </td>
+                  <td>
+
+                    <%= lic_fields.label :trade_item, "If yes, what would you like in exchange?" %>
+                      <% if @editable == 1 %>                    
+                      <%= lic_fields.text_field( :trade_item, {maxlength:24 }) %>
+                      <% end %> 
+                      
+                      <% if @editable == 0 %>
+                        <span id="tradeItemString"  class="RO_text" ><%= @lender_item_condition.trade_item %></span>
+                      <% end %> 
+                    
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>  
+                    <%= lic_fields.label "Do you require a security deposit?:"  %>
+                        <% if @editable == 1 %>
+                        <%= lic_fields.label :security_deposit, "Yes" %><%= lic_fields.radio_button :security_deposit, 1 %>
+                        <%= lic_fields.label :security_deposit, "No" %><%= lic_fields.radio_button :security_deposit, 0 %>
+                      <% end %> 
+
+                      <% if @editable == 0 %>
+                          <% if @lender_item_condition.security_deposit == 0 %>
+                            <% @cbe = "No" %>
+                          <% elsif @lender_item_condition.security_deposit == 1 %>
+                            <% @cbe = "Yes" %>
+                          <% else %>
+                            <% @cbe = "##" %>
+                          <% end %>
+                        <span id="security_deposit_String"  class="RO_text" ><%= @cbe %></span>
+                      <% end %> 
+                    
+                  </td>
+                  <td>
+
+                    <%= lic_fields.label :security_deposit_amount, "If yes, please provide the security deposit amount:" %>
+                      <% if @editable == 1 %>
+                        <%= lic_fields.text_field(:security_deposit_amount, {size:10,  maxlength:10 }) %>
+                        <span class="security_deposit_amount_error"></span>
+                      <% end %>  
+                      
+                      <% if @editable == 0 %>
+                        <span id="security_deposit_amount_String" class="RO_text" ><%=  @lender_item_condition.security_deposit_amount %></span>
+                      <% end %>  
+                    
+
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <div id="form_duration" class="center_content" >
+            <hr />
+            <div  class="div_p" >
+              <div style="margin:10px;" >
+                <span value="Lending Terms: Duration" />
+              </div>
+            </div>
+
+            <div style="float:left;width:33%;margin-left:25px;">
+              <%= lic_fields.label "Agreed number of days?:"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :agreed_number_of_days, "Yes"  %> <%= lic_fields.radio_button :agreed_number_of_days, 1 %>
+                  <%= lic_fields.label :agreed_number_of_days, "No"  %>  <%= lic_fields.radio_button :agreed_number_of_days, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.agreed_number_of_days == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.agreed_number_of_days == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="agreed_number_of_days_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+
+            </div>
+
+
+            <div style="float:left;">
+              <%= lic_fields.label "Agreed number of hours?:"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :agreed_number_of_hours, "Yes"  %> <%= lic_fields.radio_button :agreed_number_of_hours, 1 %>
+                  <%= lic_fields.label :agreed_number_of_hours, "No"  %>  <%= lic_fields.radio_button :agreed_number_of_hours, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.agreed_number_of_hours == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.agreed_number_of_hours == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="agreed_number_of_hours_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+              
+            </div>
+            <div style="float:left;margin-left:40px;">
+
+              <%= lic_fields.label "Indefinite?"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :indefinite_duration, "Yes"  %> <%= lic_fields.radio_button :indefinite_duration, 1 %>
+                  <%= lic_fields.label :indefinite_duration, "No"  %>  <%= lic_fields.radio_button :indefinite_duration, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.indefinite_duration == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.indefinite_duration == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="indefinite_duration_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+
+              
+            </div>
+          </div>
+          <div id="form_conditions" class="center_content" >
+            <hr />
+            <div  class="div_p"  >
+
+              <div style="margin:10px;" >
+                <span value="Lending Terms: Conditions" />
+              </div>
+            </div>
+
+            <table class="personal" >
+              <tr>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:25px;margin-top:5px;">
+
+                    <%= lic_fields.label "Would you like to be present during borrowing period?"  %>
+                      <% if @editable == 1 %>
+                        <%= lic_fields.label :present_during_borrowing_period, "Yes"  %> <%= lic_fields.radio_button :present_during_borrowing_period, 1 %>
+                        <%= lic_fields.label :present_during_borrowing_period, "No"  %>  <%= lic_fields.radio_button :present_during_borrowing_period, 0 %>
+                      <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.present_during_borrowing_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.present_during_borrowing_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="present_during_borrowing_period_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+                    
+                  </div>
+                </td>
+                <td style="vertical-align:top;">
+                  <div style="display:block;background-color:#E1F5A9;;margin-left:15px;margin-top:5px;" id="length_of_presence">
+                    <div style="margin-left:25px;margin-top:5px;margin-right:10px;">
+
+                <%= lic_fields.label "During the entire lending period?:"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :entire_period, "Yes"  %> <%= lic_fields.radio_button :entire_period, 1 %>
+                  <%= lic_fields.label :entire_period, "No"  %>  <%= lic_fields.radio_button :entire_period, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.entire_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.entire_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="entire_period_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+                      
+
+                    </div>
+                    <div style="margin-left:25px;margin-top:5px;margin-right:10px;">
+
+                      <%= lic_fields.label "During lending period partially?:"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :partial_period, "Yes"  %> <%= lic_fields.radio_button :partial_period, 1 %>
+                  <%= lic_fields.label :partial_period, "No"  %>  <%= lic_fields.radio_button :partial_period, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.partial_period == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.partial_period == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="partial_period_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+                      
+
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:25px;margin-top:5px;">
+                    <%= lic_fields.label "Would you like to provide item proper-use training?"  %>
+                <% if @editable == 1 %>
+                  <%= lic_fields.label :provide_proper_use_training, "Yes"  %> <%= lic_fields.radio_button :provide_proper_use_training, 1 %>
+                  <%= lic_fields.label :provide_proper_use_training, "No"  %>  <%= lic_fields.radio_button :provide_proper_use_training, 0 %>
+                <% end %>  
+
+                <% if @editable == 0 %>
+                        
+                  <% if @lender_item_condition.provide_proper_use_training == 0 %>
+                    <% @cbe = "No" %>
+                  <% elsif @lender_item_condition.provide_proper_use_training == 1 %>
+                    <% @cbe = "Yes" %>
+                  <% else %>
+                    <% @cbe = "##" %>
+                  <% end %>
+                        
+                  <span id="provide_proper_use_training_String"  class="RO_text" ><%= @cbe %></span>
+               <% end %> 
+
+                  </div>
+                </td>
+                <td style="vertical-align:top;">
+                  <div style="margin-left:15px;margin-top:5px;">
+                    <%= lic_fields.label :specific_conditions, "I have specific conditions of lending:" %>
+                      <% if @editable == 1 %>
+                      <%= lic_fields.text_area( :specific_conditions, {cols:40,  rows:10 }) %>
+                      <% end %>  
+                      
+                      <% if @editable == 0 %>
+                      <%= lic_fields.text_area( :specific_conditions, {cols:40,  rows:10, :readOnly => true }) %>
+                      <% end %>  
+                    
+                    <% if @editable == 1 %>
+                      <span class="required_fields" style="margin-left:5px;">255 characters permitted</span>                    
+                    <% end %>  
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+<% end %>
+    
+
+

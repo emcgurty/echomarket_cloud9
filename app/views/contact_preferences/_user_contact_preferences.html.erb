@@ -1,0 +1,364 @@
+  <% if contact_preference  %>
+                <% @contact_preference = contact_preference  %>
+  <% end %>  
+  
+ <% if participant  %>
+     <% @participant = participant  %>
+ <% end %> 
+ 
+            <%  @editable = editable %>
+            <% @iid = -1 %>
+            <% if item  %>    
+                <% @iid = item.item_id %>
+            <% else %>
+                <% unless session[:item_id].nil? %>
+                <% @iid = session[:item_id] %>
+                <% end %>
+            <% end %>
+       
+            <% @ut = getUserType %>  
+           
+           <% @displayAltAddress = (@participant ? @participant.display_alternative_address : nil) %>
+           <% @displayPrimaryAddress = (@participant ? @participant.display_address : nil )%>
+           <% @displayHomePhone = (@participant ? @participant.display_home_phone : nil ) %>
+           <% @displayCellPhone = (@participant ? @participant.display_cell_phone : nil ) %>
+           <% @displayAlternativePhone = (@participant ? @participant.display_alternative_phone : nil ) %>
+            
+<%= main.fields_for :contact_preference, @contact_preference do  |preference_field| %>  
+
+        <div id="form_contact_preference" class="center_content" >
+            
+        
+            <%= preference_field.hidden_field :contact_preference_id %>
+            <%= preference_field.hidden_field :preference_changed, :value => 0 %>
+
+            <% if @iid   %>
+                <% if @iid != '-1'  %>
+                    <%= preference_field.hidden_field :item_id, :value=> @iid %>
+                <% end %>
+            <% else %>
+            <%= preference_field.hidden_field :item_id %>
+            <% end %>
+            
+            <%= preference_field.hidden_field :user_id, :value=> getUserID %>
+            <%= preference_field.hidden_field :participant_id, :value=> getParticipantID %>
+          
+          <div class="top" >
+            <div style="margin:10px;margin-top:25px;" >
+
+                <% if @iid.nil? %>
+                   <% @save_update = "Save Contact Preferences" %>
+                <% elsif @iid %>
+                   <% @save_update = "Update Contact Preferences" %>
+                <% elsif @iid.nil? %>
+                   <% @save_update = "Update or Accept Current Contact Preferences" %>
+                <% end %>
+              
+              <% if @editable == 0 %>
+              <% end %>
+            </div> 
+          </div>
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+               <span>Contact Preferences</span>
+                <% if (@ut == 'lend' || @ut == 'both') && session[:cpId] %>
+                <% end %>
+              </div>
+            </div>
+
+            <% if @editable == 0 %>
+              <div  class="div_p"  >
+                <div style="margin:10px;" >
+                 <span style="color: indigo;" >"##" </span>
+                 <span> -- means 'Selection Not Made'</span>
+                </div>
+              </div>
+            <% end %>
+           
+           <% if !@displayPrimaryAddresse && !@displayAltAddress  %>
+            <% preference_field.hidden_field  :use_which_contact_address, :value=>0 %>
+          <% end %>
+           <% if @displayPrimaryAddress || @displayAltAddress %>
+            <div  class="div_p"  >
+              <div style="margin:10px;" >
+               <p>Contact Option: By Address..</p>
+              </div>
+            </div>
+
+            <div style="display:block;float:left;height:auto;width:inherit;margin-top:5px;">
+              <div style="float:left;margin-left:25px">
+                <div id="postalWithContactAddress" >    
+
+                  <%= preference_field.label "Which Address?"  %>
+                     <% if @editable == 1 %>
+                      <% if @displayPrimaryAddress && @displayAltAddress %>
+                            <%= preference_field.radio_button :use_which_contact_address, 3 %> <%= preference_field.label :use_which_contact_address,  "Use your Primary Address?"  %>
+                            <%= preference_field.radio_button :use_which_contact_address, 2 %> <%= preference_field.label :use_which_contact_address,  "Use your Alternative Address?"  %>	
+                            <%= preference_field.radio_button :use_which_contact_address, 1 %> <%= preference_field.label :use_which_contact_address, "Either address is fine."  %>
+                            <%= preference_field.radio_button :use_which_contact_address, 0 %> <%= preference_field.label :use_which_contact_address, "No address contact please."  %>
+                    <% elsif @displayPrimaryAddress && !@displayAltAddress %>
+                            <%= preference_field.radio_button :use_which_contact_address, 3 %> <%= preference_field.label :use_which_contact_address, "Use your Primary Address?"  %>
+                            <%= preference_field.radio_button :use_which_contact_address, 0 %> <%= preference_field.label :use_which_contact_address, "No address contact please."  %>
+                    <% elsif !@displayPrimaryAddress  && @displayAltAddress %>
+                            <%= preference_field.radio_button :use_which_contact_address, 2 %> <%= preference_field.label :use_which_contact_address, "Use your Alternative Address?"  %>	
+                            <%= preference_field.radio_button :use_which_contact_address, 0 %> <%= preference_field.label :use_which_contact_address, "No address contact please."  %>
+                    <% else %>        
+                    <% end %>
+                    <% end %>
+                     <% if @editable == 0 %>
+                       
+                        <% if @contact_preference.use_which_contact_address == 0 %>
+                           <% @whichAddress = "Neither, no address contact" %>
+                        <% elsif @contact_preference.use_which_contact_address == 1 %>
+                           <% @whichAddress = "Either address is fine" %>
+                        <% elsif @contact_preference.use_which_contact_address == 2 %>
+                           <% @whichAddress ="Use your Alternative Address" %>
+                        <% elsif @contact_preference.use_which_contact_address == 3 %>
+                           <% @whichAddress = "Use your Primary Address" %>
+                        <% else %>
+                           <% @whichAddress ="##" %>
+                        <% end %>>
+                       
+                     <span id="use_which_contact_address"  class="RO_text" ><%= @whichAddress %></span>
+                    <% end %>
+               
+
+                </div>
+              </div>
+            </div>
+          <% end %>
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <span>Contact Option: By Chat...</span>
+            </div>
+          </div>
+
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="float:left;margin-left:25px;">
+              <%= preference_field.label "Contact by chat?:"  %>
+                 <% if @editable == 1 %>
+                  <%= preference_field.label :contact_by_chat, 'Yes' %><%= preference_field.radio_button :contact_by_chat, 1 %>
+                  <%= preference_field.label :contact_by_chat, 'No' %><%= preference_field.radio_button :contact_by_chat, 0 %> 
+                <% end %>
+
+                 <% if @editable == 0 %>
+                    <% if @contact_preference.contact_by_chat == 0 %>>
+                       <% @cbe = "No" %>
+                    <% elsif @contact_preference.contact_by_chat== 1 %>
+                       <% @cbe = "Yes" %>
+                    <% else %>
+                       <% @cbe = "##" %>
+                    <% end %>
+                 <span id="contact_by_chat" class="RO_text" ><%= @cbe %></span>
+                <% end %>  
+
+            </div>
+          </div>
+
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <span>Contact Option: By Email...</span>
+            </div>
+          </div>
+          <div style="display:block;float:left;height:auto;width:inherit;margin-top:10px;">
+            <div style="float:left;margin-left:25px;">
+               <% @displayAltEmail = getdisplay_alternative_email %>
+               <% @udae = getuserAlternativeEmail %>
+              <%= preference_field.label "Which E-Mail Address?:"  %>
+                 <% if @editable  == 1 %>
+                       <% if @displayAltEmail %>
+                        <%= preference_field.label :contact_by_email, "Your login Email?" + getEmail.to_s %><%= preference_field.radio_button :contact_by_email, 3 %>
+                        <%= preference_field.label :contact_by_email, "Your alternative email?" + @udae.to_s  %><%= preference_field.radio_button :contact_by_email, 2 %>
+                        <%= preference_field.label :contact_by_email, "Either email"  %><%= preference_field.radio_button :contact_by_email, 1 %>	
+                        <%= preference_field.label :contact_by_email, "Neither email"  %><%= preference_field.radio_button :contact_by_email, 0 %>	
+                      <% elsif !@displayAltEmail %>
+                        <%= preference_field.label :contact_by_email, "Your login Email?" + getEmail.to_s %><%= preference_field.radio_button :contact_by_email, 3 %>
+                        <%= preference_field.label :contact_by_email, "Neither email"  %><%= preference_field.radio_button :contact_by_email, 0 %>	
+                      <% else %>
+                      <% end %>
+                <% end %>
+                 
+                 <% if @editable == 0 %>
+                   
+                    <% if @contact_preference.contact_by_email == 0 %>
+                       <% @cbe = "Neither email address" %>
+                    <% elsif @contact_preference.contact_by_email == 1 %>
+                       <% @cbe = "Either email address" %>
+                    <% elsif @contact_preference.contact_by_email == 2 %>
+                       <% @cbe = "Alternative email address" %>
+                    <% elsif @contact_preference.contact_by_email == 3 %>
+                       <% @cbe = "Login email address" %>
+                    <% else %>
+                       <% @cbe = "##" %>
+                    <% end %>
+                   
+                 <span id="contactByEmail" class="RO_text" ><%= @cbe %></span>
+                <% end %>  
+
+            </div>
+          </div>
+
+           <% if !@displayHomePhone  && !@displayCellPhone && !@displayAlternativePhone %>
+            <% preference_field.hidden_field :contact_by_home_phone, :value=>0  %>
+            <% preference_field.hidden_field :contact_by_cell_phone, :value=>0 %>
+            <% preference_field.hidden_field :contact_by_alternative_phone, :value=>0 %>
+          <% end %>
+
+           <% if @displayHomePhone  || @displayCellPhone || @displayAlternativePhone %>
+            <div  class="div_p"  id="display_phone">
+              <hr />
+              <div style="margin:10px;" >
+               <span>Contact Option: By Phone...</span><br />
+               <span>Can interested EchoMarket participants call you at your...</span>
+              </div>
+            </div>
+          <% end %>  
+
+          <div style="float:left;margin-left:25px;display:block;" >
+             <% if @displayHomePhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_homePhone" class="phone" >
+                <%= preference_field.label "... home phone?:"  %>
+                   <% if @editable == 1 %>
+                     <%= preference_field.label :contact_by_home_phone, 'Yes' %><%= preference_field.radio_button :contact_by_home_phone, 1 %>
+                     <%= preference_field.label :contact_by_home_phone, 'No' %><%= preference_field.radio_button :contact_by_home_phone, 0 %> 
+                  <% end %>
+                   <% if @editable == 0 %>
+                      <% if @contact_preference.contact_by_home_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif @contact_preference.contact_by_home_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contactByHomePhone" class="RO_text" ><%= @yn %></span>
+                  <% end %>   
+              </div>
+            <% end %>  
+
+            <% if @displayCellPhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_cell_phone" class="phone" >
+                <%= preference_field.label "... cell phone?:"  %>
+                   <% if @editable == 1 %>
+                     <%= preference_field.label :contact_by_cell_phone, 'Yes' %><%= preference_field.radio_button :contact_by_cell_phone, "1" %>
+                     <%= preference_field.label :contact_by_cell_phone, 'No' %><%= preference_field.radio_button :contact_by_cell_phone, "0" %> 
+                  <% end %>
+                   <% if @editable == 0 %>
+                      <% if @contact_preference.contact_by_cell_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif @contact_preference.contact_by_cell_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contact_by_cell_phone" class="RO_text" ><%= @yn %></span>
+                  <% end %>   
+              </div>
+            <% end %>  
+            
+             <% if @displayAlternativePhone %>
+              
+              <div style="margin-left:25px;float:left;" id="display_alternative_phone" class="phone" >
+                <%= preference_field.label "... home phone?:"  %>
+                   <% if @editable == 1 %>
+                     <%= preference_field.label :contact_by_alternative_phone, 'Yes' %><%= preference_field.radio_button :contact_by_alternative_phone, "1" %>
+                     <%= preference_field.label :contact_by_alternative_phone, 'No' %><%= preference_field.radio_button :contact_by_alternative_phone, "0" %> 
+                  <% end %>
+                   <% if @editable == 0 %>
+                      <% if @contact_preference.contact_by_alternative_phone == 0 %>
+                         <% @yn = "No" %>
+                      <% elsif @contact_preference.contact_by_alternative_phone == 1 %>
+                         <% @yn = "Yes" %>
+                      <% else %>
+                         <% @yn ="##" %>
+                      <% end %>   
+                   <span id="contactByAlternativePhone" class="RO_text" ><%= @yn %></span>
+                  <% end %>   
+              </div>
+            <% end %>  
+
+          <div  class="div_p"  >
+            <hr />
+            <div style="margin:10px;" >
+             <p>Contact Option: By Social Media...</p>
+            </div>
+          </div>
+
+          <div style="float:left;margin-left:25px;">
+
+            <% if @editable == 1 %>
+              <table  style="margin-left:15px;">
+                <tr>
+                  <td>
+                    <%= preference_field.label:contact_by_Facebook,  "Your Facebook Link or Username:"  %>
+                    <%= preference_field.text_field(:contact_by_Facebook, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                  <td>
+                    <%= preference_field.label  :contact_by_LinkedIn, "Your LinkedIn Link or Username:" %>
+                    <%= preference_field.text_field(:contact_by_LinkedIn, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= preference_field.label :contact_by_Twitter, "Your Twitter Link or Username:"  %>
+                     <%= preference_field.text_field(:contact_by_Twitter, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                  <td>
+                    <%= preference_field.label :contact_by_Instagram, "Your Instagram Link or Username:"  %>
+                    <%= preference_field.text_field(:contact_by_Instagram, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= preference_field.label :contact_by_other_social_media, "Other Social Media:"  %>
+                     <%= preference_field.text_field(:contact_by_other_social_media, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                  <td>
+                    <%= preference_field.label :contact_by_other_social_media_access, "Other Social Media Access:"  %>
+                    <%= preference_field.text_field(:contact_by_other_social_media_access, {:style=>"margin-left:5px;",  maxlength:30}) %> 
+                  </td>
+                </tr>
+              </table>
+            <% end %>
+            <% if @editable == 0 %>
+              <table  style="margin-left:15px;">
+                <tr>
+                  <td>
+                    <%= preference_field.label :contact_by_Facebook,  "Your Facebook Account:"  %>
+                     <span  style="margin-left:5px;"   class="RO_text" ><%= (@contact_preference.contact_by_Facebook.blank? ? "##" : @contact_preference.contact_by_Facebook ) %></span>
+                  </td>
+                  <td>
+                    <%= preference_field.label :contact_by_LinkedIn, "Your LinkedIn Account:"  %>
+                     <span  style="margin-left:5px;"   class="RO_text"  ><%= (@contact_preference.contact_by_LinkedIn.blank? ? "##" : @contact_preference.contact_by_LinkedIn ) %></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= preference_field.label :contact_by_Twitter, "Your Twitter Account:" %>
+                     <span   style="margin-left:5px;"   class="RO_text"  ><%= @contact_preference.contact_by_Twitter %></span>
+                  </td>
+                  <td>
+                    <%= preference_field.label :contact_by_Instagram, "Your Instagram Account:" %>
+                     <span  style="margin-left:5px;"   class="RO_text"  ><%= @contact_preference.contact_by_Instagram %></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <%= preference_field.label :contact_by_other_social_media,  "Other Social Media:"  %>
+                     <span style="margin-left:5px;"  class="RO_text" ><%= @contact_preference.contact_by_other_social_media %></span>
+                  </td>
+                  <td>
+                    <%= preference_field.label :contact_by_other_social_media_access, "Other Social Media Access:" %>
+                     <span style="margin-left:5px;"  class="RO_text" ><%= @contact_preference.contact_by_other_social_media_access %></span> 
+                  </td>
+                </tr>
+              </table>
+            <% end %>
+          </div>
+        </div>
+  </div>
+    <% end %>
+  

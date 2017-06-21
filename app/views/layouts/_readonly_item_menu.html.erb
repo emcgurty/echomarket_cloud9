@@ -1,0 +1,69 @@
+<%= stylesheet_link_tag 'item_nav' , media: 'all', 'data-turbolinks-track' => true %>
+
+   <% whichType = item_type  %>
+
+  <div class="center_content">
+  <ul id="nav" class="item_menu" >
+
+    <li class="subs"  >
+
+        <% if whichType == 'borrow' %>
+          <li id="tab_item_1" >
+          <a href="#" onclick="displaySearchDivs('item');">Item Sought to Borrow</a>
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li id="tab_item_1" >
+            <a href="#" onclick="displaySearchDivs('item');">Item Offered to Lend</a>
+          </li>
+        <% end %>  
+
+    </li>
+
+    <li class="subs"  >
+
+        <% if whichType == 'borrow' %>
+          <li id="tab_item_1" >
+          <a href="#" onclick="displaySearchDivs('nae');">About the Borrower</a>
+
+          </li>
+        <% elsif whichType == 'lend' %>
+          <li id="tab_item_1" >
+          <a href="#" onclick="displaySearchDivs('nae');">About the Lender</a>
+          </li>
+        <% end %>  
+
+    </li>
+
+
+      <% if (whichType == 'borrow' )  %>
+        <li id="tab_item_1">
+          <a href="#" onclick="displaySearchDivs('preference');">Item Contact Preferences</a>
+        </li>
+      <% elsif (whichType == 'lend')  %>
+        <li id="tab_item_1">
+          <a href="#" onclick="displaySearchDivs('preference');">Item Contact Preferences</a>
+        </li>
+        <li id="subs">
+          <a href="#s1">Item Preferences/Conditions</a>
+          <ul>
+            <li id="tab_item_12" >
+              <a href="#" onclick="displaySearchDivs('transfer');">Transfer Preferences</a>
+            </li>
+            
+            <li id="tab_item_13" >
+              <a href="#" onclick="displaySearchDivs('condition');">Lending Conditions</a>
+            </li>
+            
+          </ul>
+        </li>
+      <% end %>     
+    
+    <li >
+      <%= link_to "Return to Search... not yet available"  %>
+    </li>
+
+  </ul>
+  
+  </div>
+  
+  
