@@ -154,10 +154,12 @@ class SearchesController < ApplicationController
         image_array = Array.new
         @item_image_array = Array.new
         @items.each do |im|
+          if @hold
           @hold = ItemImage.find_by(item_id: im.item_id)
           image_array << @hold.image_file_name
           image_array << @hold.item_image_caption
           @item_image_array << image_array
+        end
           @hold = nil
         end  
         
