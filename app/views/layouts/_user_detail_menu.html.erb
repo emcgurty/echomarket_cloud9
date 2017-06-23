@@ -77,8 +77,17 @@
 
         <% unless Item.find_by(participant_id: getParticipantID ).nil?  %>
         <li class="subs" >
+              
+          <%  if getCommunityID %>
           <%= link_to "Item History", 
-              {:controller=> 'items', :action => 'existing_results', :id => getParticipantID}  %>      
+              {:controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getCommunityID}  %>  
+
+          <%  else  %>
+          <%= link_to "Item History", 
+              {:controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getParticipantID}  %>  
+
+				     <%   end   %>
+              
         </li>
         <% end %>
 

@@ -40,7 +40,7 @@ class ItemsController < ApplicationController
     session[:complete] = false
     @completedRecordMessage = nil
     @counter = 0
-    logger.debug "TESTING CALL FROM BH"
+    logger.debug "TESTING CALL FROM NEW ITEM"
     logger.debug params[:item_id]
     logger.debug params[:id]
     
@@ -143,6 +143,8 @@ class ItemsController < ApplicationController
         else     
         if @counter == 4
            session[:complete] = true
+           @item.approved = 1
+           @item.update
            flash[:notice] = "You have completed your new item record.  You may continue to makes edits. Or you may choose to create another new item."
            
         else
@@ -503,7 +505,7 @@ end
               item_condition_id: _item_condition_id, 
               item_count: _item_count,
               comment: _comment,
-              approved: 1, 
+              approved: 0, 
               notify: _notify, 
               item_type: _item_type, 
               remote_ip: _remote_ip, 

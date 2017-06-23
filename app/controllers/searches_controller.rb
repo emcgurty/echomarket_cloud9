@@ -25,6 +25,7 @@ class SearchesController < ApplicationController
         @partWhereString = nil
         @keyWhereString = nil
         @postalWhereString = nil
+        @postalRequiredString = nil
         @catWhereString = nil
         @datesWhereString = nil
      
@@ -55,10 +56,7 @@ class SearchesController < ApplicationController
       if getCommunityID
         @get_community_participants  = Item.joins(:participant)
             .where("participants.community_id = :cid AND participants.is_active = 1", {cid: getCommunityID})
-      else  
-        @get_community_participants  = Item.joins(:participant)
-            .where("participants.community_id = -9 AND participants.is_active = 1")
-      end  
+     end  
     
         if @get_community_participants
           @get_community_participants.each do |p|
@@ -109,13 +107,16 @@ class SearchesController < ApplicationController
            @postalWhereString.concat(@trimPostal)
            @postalWhereString.concat("%') ")
         else
-           @postalWhereString = " ( addresses.address_type = 'primary' ) "
+           @postalRequiredString = " ( addresses.address_type = 'primary' ) "
         end
 
         unless params[:search][:category_id].blank? || params[:search][:category_id].nil?
           unless params[:search][:category_id].to_s == '-2'
           @catWhereString = " items.category_id = "
-          @catWhereString.concat(params[:search][:category_id].to_i)
+          logger.debug "CATEGORY "
+          @holdcat = params[:search][:category_id]
+          @catWhereString.concat(@holdcat)
+          logger.debug @catWhereString
           end
         end
         
@@ -138,14 +139,36 @@ class SearchesController < ApplicationController
         
         @buildWhereClause = nil
         @buildWhereClause = @partWhereString 
-        @buildWhereClause.concat(" OR ").concat(@keyWhereString) unless @keyWhereString.nil?
+        @buildWhereClause.concat(" AND ").concat(@blWhereString) unless @blWhereString.nil? 
+        @buildWhereClause.concat(" AND ").concat(@postalRequiredString) unless @postalRequiredString.nil?
+        @buildWhereClause.concat(" AND items.approved = 1")
+        
+        @buildWhereClause.concat("(")
+        @buildWhereClause.concat(" AND ").concat(@keyWhereString) unless @keyWhereString.nil?
+        
+        if @keyWhereString.nil?
+        @buildWhereClause.concat(" AND ").concat(@postalWhereString) unless @postalWhereString.nil?
+        else
         @buildWhereClause.concat(" OR ").concat(@postalWhereString) unless @postalWhereString.nil?
-        @buildWhereClause.concat(" OR ").concat(@catWhereString) unless @catWhereString.nil?
-        @buildWhereClause.concat(" OR ").concat(@datesWhereString) unless @datesWhereString.nil?
-        @buildWhereClause.concat(" OR ").concat(@blWhereString) unless @blWhereString.nil?          
         end
+      
+        if @postalWhereString.nil? && @keyWhereString.nil?
+        @buildWhereClause.concat(" AND ").concat(@catWhereString) unless @catWhereString.nil?
+        else
+        @buildWhereClause.concat(" OR ").concat(@catWhereString) unless @catWhereString.nil?
+        end
+        
+        if @postalWhereString.nil? && @keyWhereString.nil? && @catWhereString.nil?
+        @buildWhereClause.concat(" AND ").concat(@datesWhereString) unless @datesWhereString.nil?
+        else
+        @buildWhereClause.concat(" OR ").concat(@datesWhereString) unless @datesWhereString.nil?  
+        end  
+        @buildWhereClause.concat(")")
+        end
+        
         logger.debug "@buildWhereClause"
         logger.debug @buildWhereClause
+        
         
         @items = Item.joins(participant: [:addresses])
                 .where(@buildWhereClause)

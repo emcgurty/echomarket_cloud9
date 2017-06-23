@@ -203,7 +203,7 @@
  	      <%  @aa = Address.alternative_address.where(participant_id: participant.participant_id).first %>
 
 		   	<%= fields_for :alternative_address, @aa do |alternative_address| %>
-
+          <% if  @aa %>
           <% if  @aa.postal_code %>
           
           <table>
@@ -255,7 +255,7 @@
 
                   </table>
             
-          
+         <% end %>
 				 <% end %>
 				 <% end %>
         </div>
