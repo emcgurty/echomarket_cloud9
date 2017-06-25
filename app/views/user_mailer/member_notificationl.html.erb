@@ -4,16 +4,16 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Welcome to EchoMarket.org, <%= @user.username %></h1>
+    <h1>Welcome to EchoMarket</h1>
     <p>
-      Your Community has added you as a member...
-      your username is <%= @user.username %> and your password is <%= @user.password %>.<br>
+      Your Community, <%= @community_name %>,  has added you as a member...
+      your name is <%= @full_name %> and your alias is <%= @user_alias %>.<br>
     </p>
 	
 	<h1>You now need to complete the activation process</h1>
     <p>
       Please follow this link, or copy/paste it to your browser address bar: <%= @url %>.
     </p>
-    <p>Thanks for joining EchoMarket.  Your service for borrowing, lending, donating and trading goods!</p>
+    <p>Thanks for participating EchoMarket.  Your service for borrowing, lending, donating and trading goods!</p>
   </body>
 </html>

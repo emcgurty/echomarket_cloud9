@@ -43,6 +43,43 @@
       <% end %>     
       <% end %>     
     <% if session[:complete] %>
+   <%= "whichType"    %>
+   <%= whichType    %>
+     
+    <% if (whichType == 'borrow' )  %>
+          <li id="subs">
+          <a href="#s1">Shout To Lenders?</a>
+          <ul>
+            <li id="shout_yesl" >
+              <%= link_to "Yes", {:controller => 'items', :action => 'shout', :id => 'lender_yes', } %>
+            </li>
+            
+            <li id="shout_nol" >
+              <%= link_to "No", {:controller => 'items', :action => 'shout', :id => 'lender_no'} %>
+            </li>
+            
+          </ul>
+        </li>
+    <% else %>
+          <li id="subs">
+          <a href="#s1">Shout To Borrowers?</a>
+          <ul>
+            <li id="shout_yesb" >
+              <%= link_to "Yes", {:controller => 'items', :action => 'shout', :id => 'borrower_yes'} %>
+            </li>
+            
+            <li id="shout_nob" >
+              <%= link_to "No", {:controller => 'items', :action => 'shout', :id => 'borrower_no'} %>
+            </li>
+            
+          </ul>
+        </li>
+    <% end %>
+
+
+
+
+
     <li >
       <%= link_to "User DashBoard",  participant_url('main_user_detail') %>
     </li>

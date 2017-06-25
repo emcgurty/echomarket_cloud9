@@ -6,6 +6,44 @@ class ItemsController < ApplicationController
     @@transfer_result = nil
     @@condition_result =  nil
     
+    def shout
+        
+        case params[:id].to_s
+        when "lender_yes"
+            ## Lender shouts to borrowers
+            @l_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
+            @l_cat = @l_item.category_id
+            @l_item_type = @l_item.item_type
+            
+            @item = Item.find_by(item_id: session[:item_id], notify: 1, category_id: @l_cat, item_type: @l_item_type)
+            unless @item.nil?
+            @borrowerAlias = getUserAlias
+            @result = UserMailer.shout_to_lender(@item, @borrowerAlias).deliver_now	
+            end
+        when "lender_no"    
+            @item = Item.find(session[:item_id])
+            @item.notify = -9
+            @item.update
+        when "borrower_yes"
+            ## borrower shouts to lenders
+            @b_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
+            @b_cat = @l_item.category_id
+            @b_item_type = @l_item.item_type
+            @item = Item.find_by(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
+            unless @item.nil?
+            @lenderAlias = getUserAlias
+            @result = UserMailer.shout_to_lender(@item, @lenderAlias).deliver_now	
+            end
+        when "borrower_no"                
+            @item = Item.find(session[:item_id])
+            @item.notify = -9
+            @item.update
+        end    
+        
+    ## No sure to where to redirect_to/render    
+    end
+
+
   def index
   end
 

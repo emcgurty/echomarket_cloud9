@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   post 'lender_item_conditions/update'
   
   put  'items/show/(:id)', :controller => "items", :action => "show"
+  put  'items/shout/(:id)', :controller => "items", :action => "shout"
   get  'items/borrowing_history/(:id)', :controller => "items", :action => "borrowing_history"
   put  'contacts/show', :controller => "contacts", :action => "show"
   post  'users/forgotUserPassword'
