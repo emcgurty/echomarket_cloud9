@@ -13,6 +13,7 @@ class ItemsController < ApplicationController
             @item = Item.where(item_id: session[:item_id], notify: 1, category_id: @l_cat, item_type: @l_item_type)
             unless @item.nil?
             @borrowerAlias = getUserAlias
+            ## CAN NOT PERFORM EACH IN USERMAILER
             @item.each do |itm|
             @result = UserMailer.shout_to_lender(itm, @borrowerAlias).deliver_now	
             end
@@ -27,6 +28,7 @@ class ItemsController < ApplicationController
             @b_item_type = @b_item.item_type
             @item = Item.where(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
             @lenderAlias = getUserAlias
+            ## CAN NOT PERFORM EACH IN USERMAILER
             unless @item.nil?
             @item.each do |itm|
             @result = UserMailer.shout_to_lender(itm, @lenderAlias).deliver_now	
