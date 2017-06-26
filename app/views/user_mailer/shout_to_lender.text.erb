@@ -1,15 +1,20 @@
-    Dear EchoMarket <%= @userType %>,  <%= @userAlias %>,
-    
-    The EchoMarket Borrower, <%= @borrowerAlias %>,  has sought the following item:
-    
-    Item Category: <% @itemCategory %>
-    
-    Item Description: <% @itemDescription %>
 
-    Item Condition: <% @itemCondition %>
-
-    If you would like more information, please follow this link, or copy/paste it to your browser address bar: <% @contact %>
-
-    If you wish to no longer receive notifications of sought borrower items, please follow this link, or copy/paste it to your browser address bar: <% @noNotification %>
-
+    <% @get_user_id = Participant.find_by(particpant_id: @item.participant_id).user_id %>
+    Dear EchoMarket Borrower,  <%=  User.find_by(user_id: @get_user_id).user_alias %>,
+    The EchoMarket Borrower, <%= @borrowerAlias %>,  has sought the following item: 
+      
+    Item Category: <% Category.find_by(category_id: @item.category_id).category_type %>
+       
+    Item Description: <% @item.item_description %>
+       
+    Item Condition: <% ItemCondition.find_by(id: @item.condition_id).condition %>
+       
+    Item Image: <img src="borrower/"<% ItemImage.find_by(item_id: @item.item_id).image_file_name %> height="100" width="100" />
+       
+    If you would like more information, please follow this link, or copy/paste it to your browser address bar: "https://echomarket/existing_items"/<% @item.item_id %>
+       
+    If you wish to no longer receive notifications of sought borrower items, please follow this link, or copy/paste it to your browser address bar: "https://echomarket/items/noNotication/" <% @item.participant_id %>
+       
+	
     Otherwise, EchoMarket thanks you for your participation.  Your service for borrowing, lending, donating and trading goods!
+

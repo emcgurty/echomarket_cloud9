@@ -244,12 +244,12 @@
   
           <div style="margin-top:5px;float:left;">
               <%  if @item %>
-                <% sleep 1.5 %>
+                <% sleep 1.0 %>
             		<%  @ii = ItemImage.where(item_id: @item.item_id).first %>
             		<% @imageLibrary = @item.item_type %>
-            		<%= @imageLibrary %>
+
             	<% else %>	
-            	  <% sleep 1.5 %>
+            	  <% sleep 1.0 %>
 		            <%  @ii = ItemImage.new  %>
 		            <% @imageLibrary = @itype  %>
 		        <% end %>    

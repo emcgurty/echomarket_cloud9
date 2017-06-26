@@ -1,18 +1,25 @@
-    Dear EchoMarket <%= @userType %>,  <%= @userAlias %>,
-    
+    <% @get_user_id = Participant.find_by(particpant_id: @item.participant_id).user_id %>
+    Dear EchoMarket Borrower,  <%=  User.find_by(user_id: @get_user_id).user_alias %>,
     The EchoMarket Lender, <%= @lenderAlias %>,  has offered the following item, which may be of interest to you: 
-
-    Item Category: <% @itemCategory %>
-
-    Item Description: <% @itemDescription %>
+      
     
-    Item Condition: <% @itemCondition %>
+      Item Category: <% Category.find_by(category_id: @item.category_id).category_type %>
+      
+      
+      Item Description: <% @item.item_description %>
+      
+      
+      Item Condition: <% ItemCondition.find_by(id: @item.condition_id).condition %>
+      
+      
+      Item Image: <img src="lender/"<% ItemImage.find_by(item_id: @item.item_id).image_file_name %> />
+      
+      
+      If you would like more information, please follow this link, or copy/paste it to your browser address bar: "https://echomarket/existing_items"/<% @item.item_id %>
+      
 
-    Item Image: <img src=<% @itemImage  %> height="100" width="100" >
-
-    If you would like more information, please follow this link, or copy/paste it to your browser address bar: <% @contact %>
-
-    If you wish to no longer receive notifications of offered Lender items, please follow this link, or copy/paste it to your browser address bar: <% @noNotification %><
-
-	Otherwise, EchoMarket thanks you for your participation.  Your service for borrowing, lending, donating and trading goods!
-
+      If you wish to no longer receive notifications of offered Lender items, please follow this link, or copy/paste it to your browser address bar: "https://echomarket/items/noNotication/" <% @item.participant_id %>
+      
+	
+      Otherwise, EchoMarket thanks you for your participation.  Your service for borrowing, lending, donating and trading goods!
+  

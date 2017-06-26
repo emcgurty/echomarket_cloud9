@@ -1,13 +1,8 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
-    ## Use of @@ needs to be rewritten
-    @@item_result = nil
-    @@cp_result = nil
-    @@transfer_result = nil
-    @@condition_result =  nil
-    
+
     def shout
-        
+        is_user_signed_in("shout")
         case params[:id].to_s
         when "lender_yes"
             ## Lender shouts to borrowers
@@ -22,13 +17,12 @@ class ItemsController < ApplicationController
             end
         when "lender_no"    
             @item = Item.find(session[:item_id])
-            @item.notify = -9
-            @item.update
+            @item.update(notify: -9)
         when "borrower_yes"
             ## borrower shouts to lenders
             @b_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
-            @b_cat = @l_item.category_id
-            @b_item_type = @l_item.item_type
+            @b_cat = @b_item.category_id
+            @b_item_type = @b_item.item_type
             @item = Item.find_by(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
             unless @item.nil?
             @lenderAlias = getUserAlias
@@ -36,8 +30,7 @@ class ItemsController < ApplicationController
             end
         when "borrower_no"                
             @item = Item.find(session[:item_id])
-            @item.notify = -9
-            @item.update
+            @item.update(notify: -9)
         end    
         
     ## No sure to where to redirect_to/render    
@@ -48,6 +41,7 @@ class ItemsController < ApplicationController
   end
 
   def show
+      logger.debug "RENDER ITEMS HERE"
   end  # close def
 
   def search_results
@@ -72,128 +66,70 @@ class ItemsController < ApplicationController
  
   end        
   
-  
-  def new_item
-    is_user_signed_in("new_item") 
-    session[:complete] = false
-    @completedRecordMessage = nil
-    @counter = 0
-    logger.debug "TESTING CALL FROM NEW ITEM"
-    logger.debug params[:item_id]
-    logger.debug params[:id]
-    
-    unless params[:item_id].blank?
 
-        @item = Item.find_by(item_id: params[:item_id].to_i)  
-            @strMsg = "Your item, "
-            @strMsg.concat(@item.item_description)
-            @strMsg.concat(", exists.")
-            @completedRecordMessage = @strMsg
-            @counter = @counter + 1
-            logger.debug "Item 1"
-        
-    else
-        
-        if @@item_result
-            @item = @item_result
-            @strMsg = "Your new item, "
-            @strMsg.concat(@item.item_description)
-            @strMsg.concat(", has been saved.")
-            @completedRecordMessage = @strMsg
-            @counter = @counter + 1
-            logger.debug "Item 2"
-        else    
+  def new_item
+    logger.debug "IN NEW_ITEM" 
+    is_user_signed_in("new_item") 
+    flash.notice = nil
+    session[:complete] = false
+    @cp = false
+    @lc = false
+    @lt = false
+
+
+    if params[:id] && params[:item_id].nil?
+            logger.debug "GET NEW ITEM "
             @item = Item.new
-            @item.participant_id =  params[:id]
+            @item.participant_id = params[:id]
             @item.item_type = getUserType
             @item_image = ItemImage.new
-            logger.debug "Item 3"
-        end     
-    end    
-   
-    begin
-        @new_item_id = @item.item_id
-    rescue
-    end
-    
-    @participant = Participant.find_by(participant_id: params[:id])
+    else
 
-    unless @@cp_result.nil?
-        @contact_preference = @@cp_result
-        @strMsg = "Your item Contact Preferences have been saved."
-        @completedRecordMessage.concat(@strMsg)
-        @counter = @counter + 1
-    else    
-        @contact_preference = ContactPreference.find_by(participant_id: getParticipantID, item_id: @new_item_id )
-        if @contact_preference.nil?
-          @contact_preference = ContactPreference.find_by(participant_id: getParticipantID )
-        else
-            @strMsg = "Your item Contact Preferences exist."
-            @completedRecordMessage.concat(@strMsg)
-            @counter = @counter + 1
-        end
-    end    
-        logger.debug "getUserType here"
-        logger.debug getUserType
-        if getUserType == 'lend' || getUserType == 'both'
-            
-        
-            unless @@transfer_result.nil?
-                @lender_transfer = @@transfer_result
-                @strMsg = "Your item Lender Transfer Preferences have been saved."
-                @completedRecordMessage.concat(@strMsg)
-                @counter = @counter + 1
-            else
-                @lender_transfer = LenderTransfer.find_by(participant_id: getParticipantID, item_id: @new_item_id) 
-                    if @lender_transfer.nil?
-                    @lender_transfer = LenderTransfer.find_by(participant_id: getParticipantID) 
-                    else
-                    @strMsg = "Your item Lender Transfer Preferences exist."
-                    @completedRecordMessage.concat(@strMsg)    
-                    @counter = @counter + 1
-                    end   
-            end        
-            
-            unless @@condition_result.nil?
-                @lender_item_condition = @@condition_result
-                    @strMsg = " Your item Lender Conditions have been saved."
-                    @completedRecordMessage.concat(@strMsg)    
-                    @counter = @counter + 1
-            else
-                @lender_item_condition = LenderItemCondition.find_by(participant_id: getParticipantID, item_id: @new_item_id) 
-                    if @lender_item_condition.nil?
-                    @lender_item_condition = LenderItemCondition.find_by(participant_id: getParticipantID)     
-                    else
-                    @strMsg = "Your item Lender Conditions exist."
-                    @completedRecordMessage.concat(@strMsg)    
-                    @counter = @counter + 1
-                    end    
-            end    
-        end    
-
-        
-        if @completedRecordMessage.nil? 
+     logger.debug "@contact_preference.nil?"
+     logger.debug @contact_preference.nil?
+     @item = Item.find_by(item_id: params[:item_id])
+     @contact_preference = ContactPreference.find_by(item_id: params[:item_id], participant_id: params[:id])
+     @lender_transfer = LenderTransfer.find_by(item_id: params[:item_id], participant_id: params[:id])
+     @lender_item_condition = LenderItemCondition.find_by(item_id: params[:item_id], participant_id: params[:id])
+     
+     unless @contact_preference.nil? 
+     @cp = (@contact_preference.item_id.nil? ? false : true)
+     end
+     
+     unless @lender_transfer.nil? 
+     @lt = (@lender_transfer.item_id.nil? ? false : true)
+     end
+     
+     unless @lender_item_condition.nil? 
+     @lc = (@lender_item_condition.item_id.nil? ? false : true)   
+     end
+     
+ end
+      
+     if flash.notice.nil? 
             if getUserType == 'lend' || getUserType == 'both'
                 flash[:notice] = "In offering a new Item to Lend, you must provide Item detail, and save or update your Contact Preference, Lender Transfer and Conditions Information."
             else
                 flash[:notice] = "In seeking a new Item to Borrow, you must provide Item detail, and save or update Contact Preference Information."        
             end
-        else     
-        if @counter == 4
-           session[:complete] = true
-           @item.approved = 1
-           @item.update
-           flash[:notice] = "You have completed your new item record.  You may continue to makes edits. Or you may choose to create another new item."
-           
-        else
-          flash[:notice] = @completedRecordMessage    
-        end
+     else
+            if @item
+                logger.debug "ITEM FOUND IN NEW_ITEM"
+             if @item.item_type
+                 logger.debug "ITEM TYPE FOUND IN NEW_ITEM"
+              if (@lt & @lc && (@item.item_type == 'lend' )) || (@cp && @item.item_type == 'borrow')
+                session[:complete] = true
+                @item.approved = 1
+                @item.update(approved: 1)
+                flash[:notice] = "You have completed your new item record.  You may continue to makes edits. Or you may choose to create another new item."
+              else
 
-end
-    
- 
-  end       
-  
+              end
+             end
+            end
+     end       
+      
+  end
   
   # GET /items
   # GET /items.json
@@ -267,89 +203,51 @@ end
 
      @pid =  params[:items][:item][:participant_id]
      @item_id =  params[:items][:item][:item_id]
-     @hold_item = nil
-     @hold_cp = nil
-     @hold_transfer = nil
-     @hold_condition = nil
-     
-     item_changed = -1
-     cp_changed = -1
-     transfer_changed = -1
-     condition_changed = -1
-     
-     item_changed = params[:items][:item][:item_changed].to_i
-     
-     unless @item_id.blank?
-     if params[:items][:contact_preference]
-     cp_changed = params[:items][:contact_preference][:preference_changed].to_i unless params[:items][:contact_preference][:preference_changed].blank?
-     end
-     if params[:items][:lender_transfer]
-     transfer_changed = params[:items][:lender_transfer][:transfer_changed].to_i unless params[:items][:lender_transfer][:transfer_changed].blank?
-     end
- 
-     if params[:items][:lender_transfer]
-     condition_changed = params[:items][:lender_item_condition][:condition_changed].to_i unless params[:items][:lender_item_condition][:condition_changed].blank?
+     @item = nil
+
+     if params[:items][:item]
+     if params[:items][:item][:item_changed]
+     if params[:items][:item][:item_changed].to_i == 1
+        @item = update_item
+        
      end
      end
-     
-     
-     if item_changed == 1 
-        @hold_item = update_item
-        ##logger.debug "IS HOLD ITEM NIL"
-        ##logger.debug @hold_item.to_yaml
-        unless @hold_item.nil?
-          item_changed = 0
-        end
      end
 
-    ### prevent these unless Item.item_id has been defined
      unless @item_id.nil?
      
-     if cp_changed == 1 
-        @hold_cp = update_cp
-        unless @hold_cp.nil?
-          cp_changed = 0
-        end
+         if params[:items][:contact_preference]
+         if params[:items][:contact_preference][:preference_changed]
+         if params[:items][:contact_preference][:preference_changed].to_i == 1
+            @contact_preference = update_cp
+         end
+         end
+         end 
+     
+         if params[:items][:lender_transfer]
+         if params[:items][:lender_transfer][:transfer_changed]
+         if params[:items][:lender_transfer][:transfer_changed].to_i == 1
+            @lender_transfer = update_transfer
+         end
+         end
+         end
+         
+         if params[:items][:lender_item_condition]
+         if params[:items][:lender_item_condition][:condition_changed]
+         if params[:items][:lender_item_condition][:condition_changed].to_i == 1
+            @lender_item_condition = update_condition
+         end
+         end   
+         end
+     
      end
+    redirect_to  :controller=> 'items', :action => 'new_item', :id => @pid, :item_id => @item_id
 
-     if transfer_changed == 1 
-        @hold_transfer = update_transfer
-        unless @hold_transfer.nil?
-          transfer_changed = 0
-        end
-     end
-     
-     if condition_changed == 1 
-        @hold_condition = update_condition
-        unless @hold_condition.nil?
-          condition_changed = 0
-        end
-     end
-     
- end
-          
-    ## This should also permit erb/model error reporting
     
-    @item_result = (item_changed == 1 ? @hold_item : nil)
-    @cp_result = (cp_changed == 1 ? @hold_cp : nil)
-    @transfer_result = (transfer_changed == 1 ? @hold_transfer : nil)
-    @condition_result =  (condition_changed == 1 ? @hold_condition : nil)
-    unless  @hold_item.blank?
-        @ci = @hold_item.item_id 
-    else
-        @ci = @item_id   
-    end    
-    redirect_to  :controller=> 'items', :action => 'new_item', :id => @pid, :item_id  => @ci 
-    
-    @@item_result = (item_changed == 1 ? @hold_item : nil)
-    @@cp_result = (cp_changed == 1 ? @hold_cp : nil)
-    @@transfer_result = (transfer_changed == 1 ? @hold_transfer : nil)
-    @@condition_result =  (condition_changed == 1 ? @hold_condition : nil)
 
   end
 
-  # DELETE /items/1
-  # DELETE /items/1.json
+
   def destroy
  
   end
@@ -366,7 +264,6 @@ end
      
      @current_item = nil
      @im = nil
-     params = nil
      @itemID = nil
      @readonly = false
      @ut = nil
@@ -376,16 +273,24 @@ end
      
      if @item_id.blank?
        
-       @current_item = @part.items.create!(new_item_params)
-       @current_item = @current_item.item_id
-  
+       @item = @part.items.create!(new_item_params)
+       @current_item = @item.item_id
+       @strMsg = "Your item, "
+       @strMsg.concat(@item.item_description.to_s)
+       @strMsg.concat(", has been saved.")
+       flash.notice = @strMsg
+       
        
        
      else
        @pit = @part.items.find_by(item_id: @item_id) 
-       @current_item = @pit.update!(update_item_params)
-       @current_item = @item_id
-  
+       @item = @pit.update!(update_item_params)
+       @current_item = @item.item_id
+       @strMsg = "Your current item, "
+       @strMsg.concat(@item.item_description.to_s)
+       @strMsg.concat(", exists.")
+       flash.notice = @strMsg
+
      end 
      
       
@@ -398,8 +303,6 @@ end
          session[:item_id] = @current_item.item_id
          @itemID = @current_item.item_id
          @ut = @current_item.item_type
-         
-      
 
     
      unless @iid.blank?
@@ -439,10 +342,14 @@ end
     else
        @cp = ContactPreference.where("participant_id = :pid and item_id = :iid", {pid: @pid, iid: @item_id }).first
        if @cp
+        flash.notice = "Your Contact Preference record has been updated."  
         @current_item = @cp.update!(contact_preference_params)
+        
        else 
         @part = Participant.where("participant_id = :pid", {pid: @pid}).first   
+        flash.notice = "Your Contact Preference record has been saved."
         @current_item = @part.contact_preferences.create!(contact_preference_params)
+        
        end
     end 
      
@@ -459,13 +366,17 @@ end
      if @item_id.nil?
        @part = Participant.where("participant_id = :pid", {pid: @pid}).first          
        @current_item = @part.lender_transfers.create!(lender_transfer_params)
+       
 
      else
        @cp = LenderTransfer.where("participant_id = :pid and item_id = :iid", {pid: @pid, iid: @item_id }).first
        if @cp
+            flash.notice = "Your Lender Transfer record has been updated."
             @current_item = @cp.update!(lender_transfer_params)
+            
        else       
             @part = Participant.where("participant_id = :pid", {pid: @pid}).first   
+            flash.notice = "Your Lender Transfer record has been created."
             @current_item = @part.lender_transfers.create!(lender_transfer_params)
         end       
 
@@ -488,9 +399,11 @@ end
      else
        @cp = LenderItemCondition.where("participant_id = :pid and item_id = :iid", {pid: @pid, iid: @item_id }).first
        if @cp
+            flash.notice = "Your Lender Item Condition record has been created."
             @current_item = @cp.update!(lender_item_condition_params)
        else
-            @part = Participant.where("participant_id = :pid", {pid: @pid}).first   
+            @part = Participant.where("participant_id = :pid", {pid: @pid}).first 
+            flash.notice = "Your Lender Item Condition record has been updated."
             @current_item = @part.lender_item_conditions.create!(lender_item_condition_params)           
        end
 
@@ -508,10 +421,6 @@ end
 
     
     def item_params
-    #   params.require(:item).permit(:item_id,  :participant_id,  :category_id, :other_item_category, :item_model, 
-    #                   :item_description, :item_condition_id, :item_count, 
-    #                   :comment, :created_at, :updated_at, :date_deleted, 
-    #                   :approved, :notify, :item_type, :remote_ip)
     params.require(:item).permit(:item, :contact_preference, :lender_transfer, :lender_item_condition)                      
     end
     
