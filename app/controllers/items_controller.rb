@@ -37,7 +37,8 @@ class ItemsController < ApplicationController
             @item.update(notify: -9)
         end    
         
-    ## No sure to where to redirect_to/render    
+    flash.notice = "Your Item Has been successfully Shouted"
+    redirect_to :controller => 'participants', :action => 'main_user_detail'
     end
 
 
