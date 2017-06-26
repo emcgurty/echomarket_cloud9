@@ -10,10 +10,12 @@ class ItemsController < ApplicationController
             @l_cat = @l_item.category_id
             @l_item_type = @l_item.item_type
             
-            @item = Item.find_by(item_id: session[:item_id], notify: 1, category_id: @l_cat, item_type: @l_item_type)
+            @item = Item.where(item_id: session[:item_id], notify: 1, category_id: @l_cat, item_type: @l_item_type)
             unless @item.nil?
             @borrowerAlias = getUserAlias
-            @result = UserMailer.shout_to_lender(@item, @borrowerAlias).deliver_now	
+            @item.each do |itm|
+            @result = UserMailer.shout_to_lender(itm, @borrowerAlias).deliver_now	
+            end
             end
         when "lender_no"    
             @item = Item.find(session[:item_id])
@@ -23,10 +25,12 @@ class ItemsController < ApplicationController
             @b_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
             @b_cat = @b_item.category_id
             @b_item_type = @b_item.item_type
-            @item = Item.find_by(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
-            unless @item.nil?
+            @item = Item.where(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
             @lenderAlias = getUserAlias
-            @result = UserMailer.shout_to_lender(@item, @lenderAlias).deliver_now	
+            unless @item.nil?
+            @item.each do |itm|
+            @result = UserMailer.shout_to_lender(itm, @lenderAlias).deliver_now	
+            end
             end
         when "borrower_no"                
             @item = Item.find(session[:item_id])
@@ -70,41 +74,55 @@ class ItemsController < ApplicationController
   def new_item
     logger.debug "IN NEW_ITEM" 
     is_user_signed_in("new_item") 
-    flash.notice = nil
     session[:complete] = false
+    flash.notice =  nil unless params[:item_id]
     @cp = false
     @lc = false
     @lt = false
+    @item = nil
+    @contact_preference = nil
+    @lender_transfer = nil
+    @lender_item_condition = nil
 
-
-    if params[:id] && params[:item_id].nil?
-            logger.debug "GET NEW ITEM "
+   logger.debug "params[:id] && (params[:item_id].nil? || params[:item_id].blank?)"
+   logger.debug params[:id] && (params[:item_id].nil? || params[:item_id].blank?)
+    if params[:id] && (params[:item_id].nil? || params[:item_id].blank?)
             @item = Item.new
             @item.participant_id = params[:id]
             @item.item_type = getUserType
             @item_image = ItemImage.new
     else
 
-     logger.debug "@contact_preference.nil?"
-     logger.debug @contact_preference.nil?
      @item = Item.find_by(item_id: params[:item_id])
      @contact_preference = ContactPreference.find_by(item_id: params[:item_id], participant_id: params[:id])
+     if @contact_preference.nil? 
+     @contact_preference = ContactPreference.find_by(item_id: -1, participant_id: params[:id])
+     end     
+     
+     
      @lender_transfer = LenderTransfer.find_by(item_id: params[:item_id], participant_id: params[:id])
+     if @lender_transfer.nil?
+     @lender_transfer = LenderTransfer.find_by(item_id: '', participant_id: params[:id])
+     end
+     
      @lender_item_condition = LenderItemCondition.find_by(item_id: params[:item_id], participant_id: params[:id])
+     if @lender_item_condition.nil?
+     @lender_item_condition = LenderItemCondition.find_by(item_id: '', participant_id: params[:id])
+     end
      
      unless @contact_preference.nil? 
-     @cp = (@contact_preference.item_id.nil? ? false : true)
+     @cp = (@contact_preference.item_id.to_i == -1 ? false : true )
      end
      
      unless @lender_transfer.nil? 
-     @lt = (@lender_transfer.item_id.nil? ? false : true)
+     @lt = (@lender_transfer.item_id.to_s == '' ? false : true)
      end
      
      unless @lender_item_condition.nil? 
-     @lc = (@lender_item_condition.item_id.nil? ? false : true)   
+     @lc = (@lender_item_condition.item_id.to_s == '' ? false : true)
      end
      
- end
+    end
       
      if flash.notice.nil? 
             if getUserType == 'lend' || getUserType == 'both'
@@ -114,9 +132,8 @@ class ItemsController < ApplicationController
             end
      else
             if @item
-                logger.debug "ITEM FOUND IN NEW_ITEM"
+     
              if @item.item_type
-                 logger.debug "ITEM TYPE FOUND IN NEW_ITEM"
               if (@lt & @lc && (@item.item_type == 'lend' )) || (@cp && @item.item_type == 'borrow')
                 session[:complete] = true
                 @item.approved = 1
@@ -209,7 +226,7 @@ class ItemsController < ApplicationController
      if params[:items][:item][:item_changed]
      if params[:items][:item][:item_changed].to_i == 1
         @item = update_item
-        
+        @item_id = @item.item_id
      end
      end
      end
@@ -241,7 +258,7 @@ class ItemsController < ApplicationController
          end
      
      end
-    redirect_to  :controller=> 'items', :action => 'new_item', :id => @pid, :item_id => @item_id
+     redirect_to  :controller=> 'items', :action => 'new_item', :id => @pid, :item_id => @item_id
 
     
 
@@ -285,6 +302,7 @@ class ItemsController < ApplicationController
      else
        @pit = @part.items.find_by(item_id: @item_id) 
        @item = @pit.update!(update_item_params)
+       @item = Item.find_by(item_id: @item_id) 
        @current_item = @item.item_id
        @strMsg = "Your current item, "
        @strMsg.concat(@item.item_description.to_s)

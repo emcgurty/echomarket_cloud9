@@ -18,21 +18,25 @@ class UserMailer < ApplicationMailer
  
   def shout_to_borrower(item, l_alias)
    @lenderAlias = l_alias
-   item.each do |itm|
-   @hold_user_email = Participant.find_by(particpant_id: itm.participant_id).user_id 
+   logger.debug "item"
+   logger.debug item.nil?
+   
+   @hold_user_email = Participant.find_by(participant_id: item.participant_id).user_id 
    @email = User.find_by(user_id: @hold_user_email).email
-   @item = itm   
+   @item = item   
    mail(to: @email, subject: "EchoMarket Borrower's Shout")
-   end
+   
   end
 
   def shout_to_lender(item, b_alias)
     @borrowerAlias = b_alias
-    item.each do |itm|
-    @hold_user_email = Participant.find_by(particpant_id: itm.participant_id).user_id 
+    logger.debug "item"
+    logger.debug item.nil?
+   
+    @hold_user_email = Participant.find_by(participant_id: item.participant_id).user_id 
     @email = User.find_by(user_id: @hold_user_email).email      
-    @item = itm     
+    @item = item     
     mail(to: @email, subject: "EchoMarket Lender's Shout")
-    end
+    
   end
 end
