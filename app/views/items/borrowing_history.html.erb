@@ -8,15 +8,29 @@
       <br />
      <% if @item %>
      
-     
+     <% @noTitle = 0 %>
      <% @item.each do |row| %>     
-     
-        <div style="margin-left:15px;margin-top:15px;display:block;border-right:solid gray dashed; >
+         
+         <div style="margin-left:25px;margin-top:15px;float:left;display:block;" >
+
+            <% if row.item_type.to_s == 'borrow'  && @noTitle == 0 %>
+             
             <%= label_tag  "Item to: " %>
-            <span id="item_type style="margin-left:10px;color:black;text-transform: capitalize;">
+            <span id="item_type" style="margin-left:10px;color:indigo;text-transform: capitalize;">
               <%= row.item_type %></span> 
-              <br />
-          
+            
+              <% @noTitle = 1 %>
+            
+            <% end %>
+            
+            <% if row.item_type.to_s == 'lend'  && @noTitle == 1 %>
+            <%= label_tag  "Item to: " %>
+            <span id="item_type" style="margin-left:10px;color:green;text-transform: capitalize;">
+              <%= row.item_type %></span> 
+              <% @noTitle = 2 %>
+            <% end %>
+            
+            <br />
             <%= label_tag "Item Description:" %>
             <span id="item_description" style="margin-left:10px;color:black;"><%= row.item_description %></span> 
             <br />
@@ -34,7 +48,7 @@
              <br />
              
              <%= label_tag "Date Created:" %>
-             <span style="margin-left:10px;color:black;"><%= row.created_at %></span>
+             <span style="margin-left:10px;color:black;"><%= row.created_at.strftime('%F') %></span>
              <br />
           
               <% @currentImage = ItemImage.find_by(item_id: row.item_id)  %>

@@ -187,31 +187,31 @@ class ItemsController < ApplicationController
        ## WHERE returns ActiveRecord which must be output with .each    
     if @all      
      if getCommunityID    
-         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "'" )  
+         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "'" ).order("item_type")
      else
-         @item = Item.where(participant_id: @h.at(2))
+         @item = Item.where(participant_id: @h.at(2)).order("item_type")
      end
     else  
      unless @both
      if @b && @i 
-  		 @item = Item.where(participant_id: @h.at(2), item_type:  'borrow')
+  		 @item = Item.where(participant_id: @h.at(2), item_type:  'borrow').order("item_type")
      elsif @b && @c 
-         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h.at(2).to_s + "' and items.item_type = 'borrow'")  
+         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h.at(2).to_s + "' and items.item_type = 'borrow'").order("item_type")  
      end 
   
      if @l && @i 
 
-  		 @item = Item.where(participant_id: @h.at(2).to_s, item_type: 'lend') 
+  		 @item = Item.where(participant_id: @h.at(2).to_s, item_type: 'lend').order("item_type") 
      elsif @l && @c 
 
-       @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "' and items.item_type = 'lend'")  
+       @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "' and items.item_type = 'lend'").order("item_type").order("item_type")  
      end 
      
      else
          if @i 
-  		 @item = Item.where(participant_id: @h.at(2).to_s) 
+  		 @item = Item.where(participant_id: @h.at(2).to_s).order("item_type") 
          elsif @c 
-         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "'" )  
+         @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "'" ).order("item_type")  
          end 
     end     
     end 
