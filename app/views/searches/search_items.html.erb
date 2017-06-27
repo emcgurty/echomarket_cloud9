@@ -24,7 +24,7 @@
       </div> 
       
       <div class="top" >
-          <% if @search_history %>
+          <% unless @search_history.id.nil? %>
           <div  style="float:left;margin-top:5px;margin-left:15px;background-color: white; width:45%; padding: 10px;">
           <span>Your Search History</span>
           <%= f.collection_select :id, Search.where("user_id = :iid", {iid: getUserID}), :id, :search_name, {}, {onchange: "chooseSearch(this);"}  %>

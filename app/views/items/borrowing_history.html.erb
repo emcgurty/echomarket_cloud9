@@ -2,16 +2,16 @@
 
  <% @item = item %>
   <div class="center_content" >
-      <div class="top" style="margin-top:10px;"  >
+      <div class="top" style="margin-top:10px;margin-left:25px;"  >
         <span>ITEMS SOUGHT</span>
       </div> 
       <br />
      <% if @item %>
      
-     <div style="margin-left:25px;margin-top:15px;position: relative;float:left;display:block;border-right:solid gray dashed ;" >
+     
      <% @item.each do |row| %>     
      
-        <div style="margin-left:15px;margin-top:15px;display:block;border-right:solid gray dashed ;" >
+        <div style="margin-left:15px;margin-top:15px;display:block;border-right:solid gray dashed; >
             <%= label_tag  "Item to: " %>
             <span id="item_type style="margin-left:10px;color:black;text-transform: capitalize;">
               <%= row.item_type %></span> 
@@ -55,7 +55,7 @@
        </div>
        <br />
       <% end %>
-     </div>
+     
       <% else %>
         <div class="span_class" >
         <span>No History Records Found</span>

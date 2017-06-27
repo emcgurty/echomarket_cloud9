@@ -143,7 +143,7 @@ class SearchesController < ApplicationController
         @buildWhereClause.concat(" AND ").concat(@postalRequiredString) unless @postalRequiredString.nil?
         @buildWhereClause.concat(" AND items.approved = 1")
         
-        @buildWhereClause.concat("(")
+        #@buildWhereClause.concat("(")
         @buildWhereClause.concat(" AND ").concat(@keyWhereString) unless @keyWhereString.nil?
         
         if @keyWhereString.nil?
@@ -163,7 +163,7 @@ class SearchesController < ApplicationController
         else
         @buildWhereClause.concat(" OR ").concat(@datesWhereString) unless @datesWhereString.nil?  
         end  
-        @buildWhereClause.concat(")")
+        #@buildWhereClause.concat(")")
         end
         
         logger.debug "@buildWhereClause"

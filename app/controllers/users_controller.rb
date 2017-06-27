@@ -292,7 +292,7 @@ end  # close user_login
       
     if @user.save(:validate => true) && @user.errors.empty?
     if params[:id] == 'community'
-      ###  Could get params to work, pretty sure Cloud 9 is delayed in seeing nwe definition of params
+      ###  params doesn't work for new/create.
       @cm = Community.new
       @cm.user_id = @user.user_id.to_s
       @cm.community_name = params[:user][:community_member][:community_name]
@@ -501,15 +501,20 @@ end
 		      session[:editable] = 1
           @return_string = "user_nae"  
       end
-
+  logger.debug "IS COMMUNITY DETAIL COMPLETE?1"
+  logger.debug @return_string
     if @return_string.nil?
       @completeCD = completeCommunityDetail  ## Is there are community record?
+      logger.debug "IS COMMUNITY DETAIL COMPLETE?"
       if @completeCD
+          logger.debug "IS COMMUNITY DETAIL COMPLETE?"
           ###  Get rid of these sessions 
           session[:comDetailID] = true
           session[:community_name] = @completeCD.community_name
 		      session[:community_id] = @completeCD.community_id
           session[:editable] = 0
+          logger.debug "cCOM DEAIL"
+          logger.debug session[:comDetailID]
         else 
 
           session[:comDetailID] = true
@@ -607,8 +612,7 @@ end
     elsif session[:item_id].nil? && getParticipantID
      @lic = LenderItemCondition.find_by(participant_id: getParticipantID )
     end
-    logger.debug "complee LIC QQQQQQQQ"
-    logger.debug  @lic.nil?
+    
     
     @lic
     

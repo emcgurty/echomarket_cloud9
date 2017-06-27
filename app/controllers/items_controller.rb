@@ -7,6 +7,7 @@ class ItemsController < ApplicationController
         when "lender_yes"
             ## Lender shouts to borrowers
             @l_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
+            unless @l_item.nil? 
             @l_cat = @l_item.category_id
             @l_item_type = @l_item.item_type
             
@@ -18,12 +19,16 @@ class ItemsController < ApplicationController
             @result = UserMailer.shout_to_lender(itm, @borrowerAlias).deliver_now	
             end
             end
+            else
+                flash.notice = "No matching Lenders were found"
+            end
         when "lender_no"    
             @item = Item.find(session[:item_id])
             @item.update(notify: -9)
         when "borrower_yes"
             ## borrower shouts to lenders
             @b_item = Item.find_by(item_id: session[:item_id], participant_id: getParticipantID)
+            unless @b_item.nil?
             @b_cat = @b_item.category_id
             @b_item_type = @b_item.item_type
             @item = Item.where(item_id: session[:item_id], notify: 1, category_id: @b_cat, item_type: @b_item_type)
@@ -33,6 +38,9 @@ class ItemsController < ApplicationController
             @item.each do |itm|
             @result = UserMailer.shout_to_lender(itm, @lenderAlias).deliver_now	
             end
+            end
+            else
+            flash.notice = "No matching Borrowers were found"
             end
         when "borrower_no"                
             @item = Item.find(session[:item_id])
@@ -95,7 +103,7 @@ class ItemsController < ApplicationController
             @item.item_type = getUserType
             @item_image = ItemImage.new
     else
-
+     session[:item_id] = params[:item_id]
      @item = Item.find_by(item_id: params[:item_id])
      @contact_preference = ContactPreference.find_by(item_id: params[:item_id], participant_id: params[:id])
      if @contact_preference.nil? 
@@ -128,6 +136,13 @@ class ItemsController < ApplicationController
     end
       
      if flash.notice.nil? 
+            if @item
+               if @item.item_type
+                  @ut =  @item.item_type
+               end
+            else
+                  @ut =  getUserType
+            end    
             if getUserType == 'lend' || getUserType == 'both'
                 flash[:notice] = "In offering a new Item to Lend, you must provide Item detail, and save or update your Contact Preference, Lender Transfer and Conditions Information."
             else
