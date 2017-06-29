@@ -1,56 +1,75 @@
  <%= form_for :item, {:enctype=>"multipart/form-data"} do |f| %>
 
+<style>
+    
+ .brclear {
+    clear:both;
+    height:0;
+    margin:0;
+    font-size: 1px;
+    line-height: 0;
+}
+
+</style>
+    
+    
+    
  <% @item = item %>
   <div class="center_content" >
-      <div class="top" style="margin-top:10px;margin-left:25px;"  >
+      <div class="top" style="margin-top:10px;margin-left:10px;"  >
         <span>ITEMS SOUGHT</span>
       </div> 
-      <br />
+
      <% if @item %>
-     
+     <% @noFloat = "float:left;margin:10px;" %>
      <% @noTitle = 0 %>
+     
      <% @item.each do |row| %>     
-         
-         <div style="margin-left:25px;margin-top:15px;float:left;display:block;" >
+          
+          <% if @noTitle == 1  && row.item_type == 'lend' %>
+          <div class=brclear >
+          </div>
+          <hr />
+          <% end %>
+          
+         <div style=<%= @noFloat %> >
 
             <% if row.item_type.to_s == 'borrow'  && @noTitle == 0 %>
-             
-            <%= label_tag  "Item to: " %>
+            <%= label_tag  "Item(s) to: " %>
             <span id="item_type" style="margin-left:10px;color:indigo;text-transform: capitalize;">
               <%= row.item_type %></span> 
-            
               <% @noTitle = 1 %>
-            
             <% end %>
             
             <% if row.item_type.to_s == 'lend'  && @noTitle == 1 %>
-            <%= label_tag  "Item to: " %>
+            <%= label_tag  "Item(s) to: " %>
             <span id="item_type" style="margin-left:10px;color:green;text-transform: capitalize;">
               <%= row.item_type %></span> 
               <% @noTitle = 2 %>
+
             <% end %>
-            
-            <br />
+
+            <br />            
             <%= label_tag "Item Description:" %>
             <span id="item_description" style="margin-left:10px;color:black;"><%= row.item_description %></span> 
+            
             <br />
-          
             <%= label_tag "Item Model:" %>
             <span id="item_model" style="margin-left:10px;color:black;"><%= row.item_model %></span> 
+            
             <br />
-          
              <%= label_tag "Item Approved?:" %>
              <% if row.approved == 1 %>
-            <span style="margin-left:10px;color:black;">Yes</span>
+              <span style="margin-left:10px;color:black;">Yes</span>
              <% elsif row.approved == 0 %>
              <span style="margin-left:10px;color:black;">No</span>
              <% end %>
+
              <br />
-             
              <%= label_tag "Date Created:" %>
              <span style="margin-left:10px;color:black;"><%= row.created_at.strftime('%F') %></span>
+
              <br />
-          
               <% @currentImage = ItemImage.find_by(item_id: row.item_id)  %>
               <% if @currentImage %>
               <% unless @currentImage.image_file_name.nil? %>
@@ -67,7 +86,7 @@
           <%= " | " %>
           <%= link_to "Delete", row, method: :delete, confirm: "Are you sure you wish to delete this item?" %>
        </div>
-       <br />
+
       <% end %>
      
       <% else %>

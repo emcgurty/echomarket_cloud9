@@ -204,7 +204,7 @@ class ItemsController < ApplicationController
   		 @item = Item.where(participant_id: @h.at(2).to_s, item_type: 'lend').order("item_type") 
      elsif @l && @c 
 
-       @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "' and items.item_type = 'lend'").order("item_type").order("item_type")  
+       @item = Item.joins(:participant).where("participants.community_id  = '"  + @h[2].to_s + "' and items.item_type = 'lend'").order("item_type")  
      end 
      
      else
