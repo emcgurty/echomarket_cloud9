@@ -23,11 +23,35 @@
 </script>
 
   <style>
+
   td {
    text-align: center; }
 
   th {
    word-wrap: break-word; }
+   
+  .submit_members {
+    background-color: white;
+    color: indigo;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 2px solid black;
+  }
+  
+  li.members {
+    margin-left:5px;
+    margin-bottom:5px;
+    color:maroon;
+    list-style-type: circle;
+    display: list-item
+  }  
 
   </style>
 
@@ -56,20 +80,21 @@
 
           <% else %>
 
-            <ul style="margin-left:5px;margin-bottom:5px;color:maroon;">
-              <li>All fields are required.</li>
-              <li>New members will receive email notification to complete the EchoMarket registration process.</li>
-              <li>Members with the same first name, last name and alias are considered duplicates. Distinguish folks with the same name by their aliases.</li>
-              <li>Incomplete rows will not be saved.</li>
+            <ul class="members">
+              <li class="members">All fields are required.</li>
+              <li class="members">New members will receive email notification to complete the EchoMarket registration process.</li>
+              <li class="members">Members with the same first name, last name and alias are considered duplicates. Distinguish folks with the same name by their aliases.</li>
+              <li class="members">Incomplete rows will not be saved.</li>
             </ul>
           <% end %>
+
         </div>
 
         <% if @members %>
         
         <span style="color:black;font-weight:bold;margin-top:5px;margin-bottom:5px;">Designated Community Creators</span>
-
-        <table>
+      
+        <table width="100%">
         <tr>
         <th>First Name</th>
         <th>Last Name</th>
@@ -116,9 +141,9 @@
         
         <% if @members %>
         <br/>
-          <span style="color:black;font-weight:bold;margin-top:5px;">Community Members</span>
 
-          <table >
+          <span style="color:black;font-weight:bold;margin-top:5px;margin-bottom:5px;">Community Members</span>
+          <table width="100%" >
           <tr>
             <th>#</th>
             <th>First Name</th>
@@ -265,9 +290,9 @@
         
         <% @row_index = 1 %>
         
-         <span >New Community Members</span>
-         
-        <table>
+         <hr>
+         <span style="color:black;font-weight:bold;">New Community Members</span>
+        <table width="100%">
         <tr/>  
         <th>#</th>  
         <th>First Name</th>  
@@ -278,23 +303,15 @@
         <th>Creator Privilege?</th>
         
         </tr>
+        
         <% num_rows.times do  %>
         <% @new_mem = Participant.new %>
         <%= f.fields_for 'mem_array[]', @new_mem do |newm| %>
-              <% if @row_index == 1 %>
-              <tr>
-               <td>
-                
-                <%= newm.submit "Save New Member(s)" %> 
-              </td>
-              </tr>
-              <% end %>
+         
               <tr>
                <td>
                 <%= @row_index %>
                  <%= newm.hidden_field :current_row , :value => @row_index %> 
-
-               
               </td>
               
               <td>
@@ -323,10 +340,18 @@
             <td>
               <%= newm.label :is_creator, "Yes"  %><%= newm.radio_button :is_creator, 1, {:name => "rbic".concat(@row_index.to_s) } %>
               <%= newm.label :is_creator, "No"  %><%= newm.radio_button :is_creator, 0, {:name => "rbic".concat(@row_index.to_s) } %>
-              <% @row_index = @row_index +1 %> 
-            </td>
+              
+              </td>
             </tr>
-          
+              <% if @row_index ==  num_rows %>
+              <tr>
+               <td align="center" colspan=7>
+                <%= newm.submit "Save New Member(s)", :class => 'submit_members' %> 
+              </td>
+              </tr>
+              <% end %>
+            
+            <% @row_index = @row_index +1 %> 
         <% end %>
         <% end %>
         
