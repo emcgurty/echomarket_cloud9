@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  get '(errors)/:status', to: 'errors#show', constraints: {status: /\d{3}/}, via: :all
+  
+  
   resources :participants do 
     put  'user_nae'
     get  'user_agreement'

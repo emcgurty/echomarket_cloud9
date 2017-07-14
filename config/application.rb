@@ -23,5 +23,7 @@ module Workspace
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
     config.assets.paths << Rails.root.join("borrow", "lend") 
+    config.action_dispatch.rescue_responses["ParticipantsController::Forbidden"] = :forbidden
+    config.exceptions_app = self.routes
   end
 end

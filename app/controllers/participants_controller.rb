@@ -1,4 +1,5 @@
 class ParticipantsController < ApplicationController
+  class Forbidden < StandardError; end
   before_action :set_participant, only: [:show, :edit, :update, :destroy]
 
   # GET /participants
@@ -377,6 +378,7 @@ class ParticipantsController < ApplicationController
    	    render 'participants/user_nae', participant: @participant, editable: @editable  
 	
      end 
+      raise Forbidden, "You are not allowed to access participant information."
   end
 
   # GET /participants/new

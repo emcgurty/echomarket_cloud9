@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   #before_action :set_user, only: [:show, :edit, :update, :destroy]
   #before_action :set_user, only: [:user_registration, :user_login]
-  
+  class Forbidden < StandardError; end  
   
   def user_login_update
   end
