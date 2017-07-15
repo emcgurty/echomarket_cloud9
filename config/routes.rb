@@ -35,6 +35,10 @@ Rails.application.routes.draw do
   
   resources :items do
    post 'update'
+   member do
+     get :delete
+     delete :delete, action: :destroy
+    end
    #put 'user_item'
   end
   
@@ -95,6 +99,7 @@ Rails.application.routes.draw do
   get   'communities/community_detail', :controller => "communities", :action => "community_detail"
   get   'participants/main_user_detail', :controller => 'participants', :action => 'main_user_detail'				    
   get   'participants/community_members', :controller => "participants", :action => "community_members"
-  get   'users/user_logout', :controller => 'users', :action => 'user_logout'				    
+  get   'users/user_logout', :controller => 'users', :action => 'user_logout'
+	post  'items/(:id)/delete',  :controller => 'items', :action => 'destroy'			    
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

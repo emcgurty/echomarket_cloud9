@@ -185,11 +185,11 @@ def user_login
 					        session[:cpId] = true
 					        session[:LICid] = true
 					        session[:LITid] = true
-                  if getCommunityID
+                if getCommunityID
                   redirect_to  :controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getCommunityID
-                  else 
+                else 
                   redirect_to  :controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getParticipantID
-				          end
+				        end
 				        end
 				         
 				         

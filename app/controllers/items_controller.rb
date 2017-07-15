@@ -278,14 +278,20 @@ class ItemsController < ApplicationController
      end
      redirect_to  :controller=> 'items', :action => 'new_item', :id => @pid, :item_id => @item_id
 
-    
-
   end
 
+ def destroy
+    ## delete_item GET    /items/:id/delete(.:format) 
+    @item = Item.find(params[:id])
+    @item.destroy
+    is_user_signed_in("Items/Destroy")      
+    if getCommunityID
+      redirect_to  :controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getCommunityID
+    else 
+      redirect_to  :controller=> 'items', :action => 'borrowing_history', :id => 'all, all,' + getParticipantID
+    end
+ end
 
-  def destroy
- 
-  end
 
   private
   
